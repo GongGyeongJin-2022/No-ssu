@@ -1,15 +1,10 @@
-import React from 'react';
-import {Text, View} from 'react-native';
+import React from 'react'; 
+import Login from './login.js';
 
 const App = () => {
-    return (
-        <View>
-            <Text>
-                Hello
-            </Text>
-        </View>
-
-    )
+  return (
+    <Login></Login>
+    );
 }
 
 export default App;
