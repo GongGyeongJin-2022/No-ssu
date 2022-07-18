@@ -4,7 +4,7 @@ import { Text, View } from "react-native";
 const Upload = () => {
     return (
         <View>
-            <Text>MyPage</Text>
+            <Text style={{color: 'black'}}>MyPage</Text>
         </View>
     );
 };

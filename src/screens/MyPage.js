@@ -3,8 +3,8 @@ import { Text, View } from "react-native";
 
 const MyPage = () => {
     return (
-        <View>
-            <Text>MyPage</Text>
+        <View style={{flex: 1}}>
+            <Text style={{color: 'black'}}>MyPage</Text>
         </View>
     );
 };
