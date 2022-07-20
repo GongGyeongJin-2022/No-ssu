@@ -1,13 +1,13 @@
 import React from 'react';                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
 import { Image, View, Text, TouchableOpacity, TextInput, StyleSheet, Button } from 'react-native';
-let imagePath = require('../src/img/user_interface.png');
+import user_interface from '@assets/img/user_interface.png'
 
 const login = () => {
   return (
       <View style={styles.container}>
       <Image
       style={styles.image}
-      source={imagePath}/>
+      source={user_interface}/>
         <Text style={styles.Title}>
             Login
         </Text>
