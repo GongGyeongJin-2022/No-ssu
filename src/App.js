@@ -1,9 +1,9 @@
-import React from 'react'; 
-import Login from './login.js';
+import React from 'react';
+import Login from '~/Login';
 
 const App = () => {
-  return (
-    <Login></Login>
+    return (
+        <Login />
     );
 }
 
