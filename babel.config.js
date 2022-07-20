@@ -20,6 +20,7 @@ module.exports = {
           '~': './src',
           '@components': './src/components',
           '@screens': './src/screens',
+          '@hooks': './src/hooks',
           '@assets': './src/assets',
           '@query': './src/query',
         },

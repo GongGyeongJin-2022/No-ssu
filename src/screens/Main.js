@@ -1,17 +1,28 @@
 import React, { useEffect, useState } from "react";
-import { TouchableHighlight, View, StyleSheet } from "react-native";
+import { TouchableWithoutFeedback, View, StyleSheet } from "react-native";
 
 import NaverMapView from "react-native-nmap";
 import { FloatingButton } from "@components/FloatingButton";
 import Icon from "react-native-vector-icons/Feather";
 import Geolocation from '@react-native-community/geolocation';
+import { Marker } from "react-native-nmap/index";
+import { useInterval } from "@hooks/Hooks.js";
+import MyLocationPin from "@components/MyLocationPin";
+import MyLocationButton from "../components/MyLocationButton";
 
 const Main = ({ navigation }) => {
-    const [location, setLocation] = useState({latitude: 0, longitude: 0});
+    const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
+    const [findLocation, setFindLocation] = useState(false);
 
     useEffect(() => {
         setGeoLocation();
     }, []);
+
+    useInterval(() => {
+        if (findLocation) {
+            setGeoLocation();
+        }
+    }, 1000);
 
     const setGeoLocation = () => {
         Geolocation.getCurrentPosition(
@@ -31,44 +42,38 @@ const Main = ({ navigation }) => {
 
     return (
         <View>
-            <NaverMapView
-                style={{width: '100%', height: '100%'}}
-                showsMyLocationButton={false}
-                center={{latitude: parseFloat(location.latitude), longitude: parseFloat(location.longitude), zoom: 16}}
-            >
-            </NaverMapView>
+            {
+                findLocation ? (
+                    <NaverMapView
+                        style={{width: '100%', height: '100%'}}
+                        showsMyLocationButton={false}
+                        center={{latitude: parseFloat(location.latitude), longitude: parseFloat(location.longitude)}}
+                        setLocationTrackingMode={3}
+                    >
+                        <Marker
+                            coordinate={{latitude: location.latitude, longitude: location.longitude}}
+                            width={18}
+                            height={18}
+                        >
+                            <MyLocationPin />
+                        </Marker>
+                    </NaverMapView>
+                ) : (
+                    <NaverMapView
+                        style={{width: '100%', height: '100%'}}
+                        showsMyLocationButton={false}
+                        center={{latitude: parseFloat(location.latitude), longitude: parseFloat(location.longitude)}}
+                        setLocationTrackingMode={3}
+                    >
+                    </NaverMapView>
+                )
+            }
 
-            <TouchableHighlight onPress={() => setGeoLocation()} style={styles.myLocationButton}>
-                <Icon name="map-pin" size={20} color={'black'} />
-            </TouchableHighlight>
+            <MyLocationButton findLocation={findLocation} setFindLocation={setFindLocation} />
 
             <FloatingButton navigation={navigation} />
         </View>
     );
 }
-
-const styles = StyleSheet.create({
-    myLocationButton: {
-        flex: 1,
-        position: 'absolute',
-        width: 45,
-        height: 45,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: 'white',
-        borderRadius: 5,
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 1,
-        },
-        shadowOpacity: 0.22,
-        shadowRadius: 2.22,
-        elevation: 3,
-        bottom: 50,
-        left: 15,
-        zIndex: 1
-    }
-});
 
 export default Main;
