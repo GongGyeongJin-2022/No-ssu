@@ -7,30 +7,35 @@ import { NavigationContainer } from '@react-navigation/native';
 import Main from '@screens/Main';
 import MyPage from "@screens/MyPage";
 import Upload from "@screens/Upload";
+import Login from '~/Login';
 
 const Stack = createStackNavigator();
 
 const App = () => {
     return (
-        <NavigationContainer>
-            <Stack.Navigator initialRouteName="Main">
-                <Stack.Screen
-                    name="Main"
-                    component={Main}
-                    options={{headerShown: false}}
-                />
-                <Stack.Screen
-                    name="MyPage"
-                    component={MyPage}
-                    options={{headerShown: false}}
-                />
-                <Stack.Screen
-                    name="Upload"
-                    component={Upload}
-                    options={{headerShown: false}}
-                />
-            </Stack.Navigator>
-        </NavigationContainer>
+        <SafeAreaView>
+            <Login />
+
+            <NavigationContainer>
+                <Stack.Navigator initialRouteName="Main">
+                    <Stack.Screen
+                        name="Main"
+                        component={Main}
+                        options={{headerShown: false}}
+                    />
+                    <Stack.Screen
+                        name="MyPage"
+                        component={MyPage}
+                        options={{headerShown: false}}
+                    />
+                    <Stack.Screen
+                        name="Upload"
+                        component={Upload}
+                        options={{headerShown: false}}
+                    />
+                </Stack.Navigator>
+            </NavigationContainer>
+        </SafeAreaView>
     )
 }
 
