@@ -13,8 +13,8 @@ const Stack = createStackNavigator();
 
 const App = () => {
     return (
-        <SafeAreaView>
-            <Login />
+        <>
+            {/*<Login />*/}
 
             <NavigationContainer>
                 <Stack.Navigator initialRouteName="Main">
@@ -35,7 +35,7 @@ const App = () => {
                     />
                 </Stack.Navigator>
             </NavigationContainer>
-        </SafeAreaView>
+        </>
     )
 }
 
