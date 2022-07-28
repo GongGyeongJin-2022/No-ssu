@@ -1,8 +1,51 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import user_interface from '@assets/img/user_interface.png'
+import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-signin';
 
 const Login = () => {
+    const [user, setUser] = useState();
+
+    useEffect(() => {
+        GoogleSignin.configure({
+            scopes: [
+                'https://www.googleapis.com/auth/userinfo.profile',
+                'https://www.googleapis.com/auth/userinfo.email',
+                'openid'
+            ], // what API you want to access on behalf of the user, default is email and profile
+            webClientId: "650183824974-gqopp2a9bfcs2q94upe41vlas7ku2g7e.apps.googleusercontent.com", // client ID of type WEB for your server (needed to verify user ID and offline access)
+            offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+            // hostedDomain: '', // specifies a hosted domain restriction
+            forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+            //iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+        });
+    },[]);
+
+    useEffect(() => {
+        console.log("user", user);
+    },[JSON.stringify(user)]);
+
+    const loginGoogle = async () => {
+        try {
+            const result = await GoogleSignin.hasPlayServices();
+            console.log("result",result);
+            const userInfo = await GoogleSignin.signIn();
+            setUser(userInfo);
+            console.log("here");
+        } catch (error) {
+            console.log("error", JSON.stringify(error));
+            if (error.code === statusCodes.SIGN_IN_CANCELLED) {
+                // user cancelled the login flow
+            } else if (error.code === statusCodes.IN_PROGRESS) {
+                // operation (e.g. sign in) is in progress already
+            } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
+                // play services not available or outdated
+            } else {
+                // some other error happened
+            }
+        }
+    };
+
     return (
         <View style={styles.container}>
             <Image
@@ -15,7 +58,7 @@ const Login = () => {
                 Start With Your Google Or Kakao Account
             </Text>
             <View>
-                <TouchableOpacity style= {styles.button1}>
+                <TouchableOpacity style= {styles.button1} onPress={loginGoogle}>
                     <Text style = {styles.button1_txt}>Login in Google</Text>
                 </TouchableOpacity>
                 <Text>

@@ -12,7 +12,7 @@ const App = () => {
     return (
         <GestureHandlerRootView style={{flex: 1}}>
             <BottomSheetModalProvider>
-                <Main />
+                <Login />
             </BottomSheetModalProvider>
         </GestureHandlerRootView>
     )
