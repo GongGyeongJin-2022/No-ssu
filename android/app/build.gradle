@@ -221,10 +221,16 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('debug.keystore')
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
+            storeFile file('./debug.keystore')
+        }
+        release {
+            storePassword '123456'
+            keyAlias 'nossu-release'
+            keyPassword '123456'
+            storeFile file('./nossu-release.keystore')
         }
     }
     buildTypes {
