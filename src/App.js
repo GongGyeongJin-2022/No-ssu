@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView } from "react-native";
+import {SafeAreaView, Text} from "react-native";
 import 'react-native-gesture-handler';
 
 import { createStackNavigator } from '@react-navigation/stack';
@@ -8,13 +8,19 @@ import Main from '@screens/Main';
 import MyPage from "@screens/MyPage";
 import Upload from "@screens/Upload";
 import Login from './Login';
+import {RecoilRoot} from "recoil";
 
 const Stack = createStackNavigator();
 
 const App = () => {
     return (
         <>
-            <Login />
+            <RecoilRoot>
+                <React.Suspense fallback={<Text>Loading...</Text>}>
+                    <Login />
+                </React.Suspense>
+            </RecoilRoot>
+
 
             {/*<NavigationContainer>*/}
             {/*    <Stack.Navigator initialRouteName="Main">*/}

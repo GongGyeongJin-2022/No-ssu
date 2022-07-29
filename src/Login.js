@@ -2,9 +2,15 @@ import React, {useEffect, useState} from 'react';
 import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import user_interface from '@assets/img/user_interface.png'
 import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-signin';
+import {useRecoilValue, useSetRecoilState} from "recoil";
+import {googleLoginSelector, tokenSelector} from "@apis/selectors";
+import {GOOGLELOGIN_POST_ERROR} from "@apis/types";
 
 const Login = () => {
     const [user, setUser] = useState();
+    const [body, setBody] = useState({});
+    const setToken = useSetRecoilState(tokenSelector);
+    const googleLoginResponse = useRecoilValue(googleLoginSelector(body));
 
     useEffect(() => {
         GoogleSignin.configure({
@@ -22,8 +28,24 @@ const Login = () => {
     },[]);
 
     useEffect(() => {
-        console.log("user", user);
+        if(user) {
+            console.log("user", user);
+            setBody({
+                "code": user.serverAuthCode,
+                "id_token": user.idToken
+            });
+        }
+
     },[JSON.stringify(user)]);
+
+    useEffect(() => {
+        console.log("googleLoginResponse : ", googleLoginResponse);
+        if(googleLoginResponse === GOOGLELOGIN_POST_ERROR) {
+            console.log("login fail!");
+        } else {
+            setToken({accessToken: googleLoginResponse.access_token, refreshToken: googleLoginResponse.refresh_token});
+        }
+    },[googleLoginResponse])
 
     const loginGoogle = async () => {
         try {
