@@ -23,6 +23,8 @@ module.exports = {
           '@hooks': './src/hooks',
           '@assets': './src/assets',
           '@query': './src/query',
+          '@apis': './src/apis',
+          '@utils': './src/utils',
         },
       },
     ],
