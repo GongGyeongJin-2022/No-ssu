@@ -27,7 +27,7 @@ export const loginSelector = selectorFamily<Token, Body>({
     }
 })
 
-export const googleLoginSelector = selectorFamily<Token, Body >({
+export const googleLoginSelector = selectorFamily<Token, Body>({
     key: 'loginGoogleSelector',
     get: (body) => async ({}) => {
         return postGooleLoginFinish(body)
