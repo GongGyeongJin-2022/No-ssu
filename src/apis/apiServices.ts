@@ -23,6 +23,15 @@ export const postRegistration = (body:any):Promise<AxiosResponse> => {
     )
 }
 
+export const postGooleLoginFinish = (body:any):Promise<AxiosResponse> => {
+    return axios.post(
+        `${URL}/api/accounts/v1/login/google/finish/`,
+        body, {
+            withCredentials: false
+        }
+    )
+}
+
 export const getUser = ():Promise<AxiosResponse> => {
     return axios.get (
         `${URL}/api/accounts/v1/user/`,

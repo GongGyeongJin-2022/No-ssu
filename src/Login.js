@@ -2,28 +2,49 @@ import React, {useEffect, useState} from 'react';
 import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import user_interface from '@assets/img/user_interface.png'
 import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-signin';
+import {useRecoilValue, useSetRecoilState} from "recoil";
+import {googleLoginSelector, tokenSelector} from "@apis/selectors";
+import {GOOGLELOGIN_POST_ERROR} from "@apis/types";
+import {Token} from "@apis/atoms";
+
+GoogleSignin.configure({
+    scopes: [
+        'https://www.googleapis.com/auth/userinfo.profile',
+        'https://www.googleapis.com/auth/userinfo.email',
+        'openid'
+    ], // what API you want to access on behalf of the user, default is email and profile
+    webClientId: "650183824974-gqopp2a9bfcs2q94upe41vlas7ku2g7e.apps.googleusercontent.com", // client ID of type WEB for your server (needed to verify user ID and offline access)
+    offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
+    // hostedDomain: '', // specifies a hosted domain restriction
+    forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
+    //iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
+});
 
 const Login = () => {
     const [user, setUser] = useState();
+    const [body, setBody] = useState({});
+    const setToken = useSetRecoilState(tokenSelector);
+    const googleLoginResponse = useRecoilValue(googleLoginSelector(body));
 
     useEffect(() => {
-        GoogleSignin.configure({
-            scopes: [
-                'https://www.googleapis.com/auth/userinfo.profile',
-                'https://www.googleapis.com/auth/userinfo.email',
-                'openid'
-            ], // what API you want to access on behalf of the user, default is email and profile
-            webClientId: "650183824974-gqopp2a9bfcs2q94upe41vlas7ku2g7e.apps.googleusercontent.com", // client ID of type WEB for your server (needed to verify user ID and offline access)
-            offlineAccess: true, // if you want to access Google API on behalf of the user FROM YOUR SERVER
-            // hostedDomain: '', // specifies a hosted domain restriction
-            forceCodeForRefreshToken: true, // [Android] related to `serverAuthCode`, read the docs link below *.
-            //iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
-        });
-    },[]);
+        if(user) {
+            console.log("user", user);
+            setBody({
+                "code": user.serverAuthCode,
+                "id_token": user.idToken
+            });
+        }
 
-    useEffect(() => {
-        console.log("user", user);
     },[JSON.stringify(user)]);
+
+    useEffect(() => {
+        console.log("googleLoginResponse : ", googleLoginResponse);
+        if(googleLoginResponse === GOOGLELOGIN_POST_ERROR) {
+            console.log("login fail!");
+        } else {
+            setToken({accessToken: googleLoginResponse.access_token, refreshToken: googleLoginResponse.refresh_token});
+        }
+    },[googleLoginResponse])
 
     const loginGoogle = async () => {
         try {
