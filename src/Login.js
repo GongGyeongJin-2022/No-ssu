@@ -20,7 +20,7 @@ GoogleSignin.configure({
     //iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 });
 
-const Login = () => {
+const Login = ({ navigation }) => {
     const [user, setUser] = useState();
     const [body, setBody] = useState({});
     const setToken = useSetRecoilState(tokenSelector);
@@ -33,6 +33,8 @@ const Login = () => {
                 "code": user.serverAuthCode,
                 "id_token": user.idToken
             });
+
+            navigation.navigate("Main");
         }
 
     },[JSON.stringify(user)]);

@@ -7,9 +7,13 @@ import MyPage from "@screens/MyPage";
 import Upload from "@screens/Upload";
 import Login from '~/Login';
 
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
-import {GestureHandlerRootView} from "react-native-gesture-handler";
 import { RecoilRoot } from "recoil";
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+
+const Stack = createNativeStackNavigator();
 
 const App = () => {
     return (
@@ -17,7 +21,16 @@ const App = () => {
             <React.Suspense fallback={<Text>Loading...</Text>}>
                 <GestureHandlerRootView style={{flex: 1}}>
                     <BottomSheetModalProvider>
-                        <Login />
+                        <NavigationContainer>
+                            <Stack.Navigator
+                                initialRouteName="Login"
+                                screenOptions={{ headerShown: false }}
+                            >
+                                {/*기본적으로 Login이였다가 로그인이 완료되면 Main으로 네이게이팅*/}
+                                <Stack.Screen name="Main" component={Main} />
+                                <Stack.Screen name="Login" component={Login} />
+                            </Stack.Navigator>
+                        </NavigationContainer>
                     </BottomSheetModalProvider>
                 </GestureHandlerRootView>
             </React.Suspense>

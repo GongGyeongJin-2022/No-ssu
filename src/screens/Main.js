@@ -11,7 +11,7 @@ import MyLocationButton from "../components/MyLocationButton";
 
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 
-const Main = ()  => {
+const Main = ({ navigation })  => {
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
 
@@ -19,7 +19,7 @@ const Main = ()  => {
     const bottomSheetModalRef = useRef(null);
 
     // variables
-    const snapPoints = useMemo(() => ['25%', '50%'], []);
+    const snapPoints = useMemo(() => ['25%', '50%', '100%'], []);
 
     useEffect(() => {
         setGeoLocation();
