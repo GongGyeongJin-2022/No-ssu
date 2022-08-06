@@ -2,10 +2,11 @@ import React, {useEffect, useState} from 'react';
 import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import user_interface from '@assets/img/user_interface.png'
 import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-signin';
-import {useRecoilValue, useSetRecoilState} from "recoil";
+import {useRecoilCallback, useRecoilState, useRecoilValue, useSetRecoilState} from "recoil";
 import {googleLoginSelector, tokenSelector} from "@apis/selectors";
 import {GOOGLELOGIN_POST_ERROR} from "@apis/types";
-import {Token} from "@apis/atoms";
+import {Token, tokenState} from "@apis/atoms";
+import {postGooleLoginFinish} from "@apis/apiServices";
 
 GoogleSignin.configure({
     scopes: [
@@ -23,28 +24,51 @@ GoogleSignin.configure({
 const Login = () => {
     const [user, setUser] = useState();
     const [body, setBody] = useState({});
-    const setToken = useSetRecoilState(tokenSelector);
-    const googleLoginResponse = useRecoilValue(googleLoginSelector(body));
+    const [token, setToken] = useRecoilState(tokenState);
+    //const googleLoginResponse = useRecoilValue(googleLoginSelector(body));
+
+    useEffect(() => {
+        console.log("token", token);
+    },[token])
+
+    const addTodo = useRecoilCallback(
+        ({ snapshot, set }) =>
+            async (body) => {
+                //const todoIds = snapshot.getLoadable(todoIdsState).getValue();
+                console.log("body", body);
+                const {data} = await postGooleLoginFinish(body);
+                console.log("response ", data);
+                set(tokenState, {
+                    accessToken: data.access_token,
+                    refreshToken: data.refresh_token
+                });
+            },
+        [],
+    );
 
     useEffect(() => {
         if(user) {
             console.log("user", user);
-            setBody({
+            // setBody({
+            //     "code": user.serverAuthCode,
+            //     "id_token": user.idToken
+            // });
+            addTodo({
                 "code": user.serverAuthCode,
                 "id_token": user.idToken
-            });
+            })
         }
 
     },[JSON.stringify(user)]);
 
-    useEffect(() => {
-        console.log("googleLoginResponse : ", googleLoginResponse);
-        if(googleLoginResponse === GOOGLELOGIN_POST_ERROR) {
-            console.log("login fail!");
-        } else {
-            setToken({accessToken: googleLoginResponse.access_token, refreshToken: googleLoginResponse.refresh_token});
-        }
-    },[googleLoginResponse])
+    // useEffect(() => {
+    //     console.log("googleLoginResponse : ", googleLoginResponse);
+    //     if(googleLoginResponse === GOOGLELOGIN_POST_ERROR) {
+    //         console.log("login fail!");
+    //     } else {
+    //         setToken({accessToken: googleLoginResponse.access_token, refreshToken: googleLoginResponse.refresh_token});
+    //     }
+    // },[googleLoginResponse])
 
     const loginGoogle = async () => {
         try {
