@@ -1,6 +1,7 @@
 module.exports = {
   presets: ['module:metro-react-native-babel-preset'],
   plugins: [
+    'react-native-reanimated/plugin',
     [
       'module-resolver',
       {
@@ -23,6 +24,8 @@ module.exports = {
           '@hooks': './src/hooks',
           '@assets': './src/assets',
           '@query': './src/query',
+          '@apis': './src/apis',
+          '@utils': './src/utils',
         },
       },
     ],

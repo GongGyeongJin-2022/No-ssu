@@ -1,21 +1,29 @@
-import React, { useEffect, useState } from "react";
-import { TouchableWithoutFeedback, View, StyleSheet } from "react-native";
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import { TouchableWithoutFeedback, View, StyleSheet, Text } from "react-native";
 
 import NaverMapView from "react-native-nmap";
 import { FloatingButton } from "@components/FloatingButton";
-import Icon from "react-native-vector-icons/Feather";
 import Geolocation from '@react-native-community/geolocation';
 import { Marker } from "react-native-nmap/index";
 import { useInterval } from "@hooks/Hooks.js";
 import MyLocationPin from "@components/MyLocationPin";
 import MyLocationButton from "../components/MyLocationButton";
 
-const Main = ({ navigation }) => {
+import { BottomSheetModal } from '@gorhom/bottom-sheet';
+
+const Main = ({ navigation })  => {
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
 
+    // ref
+    const bottomSheetModalRef = useRef(null);
+
+    // variables
+    const snapPoints = useMemo(() => ['25%', '50%', '100%'], []);
+
     useEffect(() => {
         setGeoLocation();
+        bottomSheetModalRef.current?.present();
     }, []);
 
     useInterval(() => {
@@ -42,6 +50,16 @@ const Main = ({ navigation }) => {
 
     return (
         <View>
+            <BottomSheetModal
+                ref={bottomSheetModalRef}
+                index={1}
+                snapPoints={snapPoints}
+            >
+                <View>
+                    <Text>Awesome 🎉</Text>
+                </View>
+            </BottomSheetModal>
+
             {
                 findLocation ? (
                     <NaverMapView
@@ -71,7 +89,7 @@ const Main = ({ navigation }) => {
 
             <MyLocationButton findLocation={findLocation} setFindLocation={setFindLocation} />
 
-            <FloatingButton navigation={navigation} />
+            <FloatingButton />
         </View>
     );
 }

@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 
-export const FloatingButton = ({ navigation }) => {
+export const FloatingButton = () => {
     const [animation, setAnimation] = useState(new Animated.Value(0));
     const [open, setOpen] = useState(0);
 
@@ -51,17 +51,13 @@ export const FloatingButton = ({ navigation }) => {
         <View style={styles.container}>
             {open ? (
                 <>
-                    <TouchableWithoutFeedback
-                        onPress={() => navigation.navigate('Upload')}
-                    >
+                    <TouchableWithoutFeedback>
                         <Animated.View style={[styles.button, styles.item, pinStyle]}>
                             <Icon name="map-pin" size={20} color="#93CE92" />
                         </Animated.View>
                     </TouchableWithoutFeedback>
 
-                    <TouchableWithoutFeedback
-                        onPress={() => navigation.navigate(('MyPage'))}
-                    >
+                    <TouchableWithoutFeedback>
                         <Animated.View style={[styles.button, styles.item, userStyle]}>
                             <Icon name="user" size={20} color="#6EBFB0" />
                         </Animated.View>
