@@ -71,31 +71,99 @@ const Login = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Image
-                style={styles.image}
-                source={user_interface}/>
+        <Image source={Logo} style={styles.Image_Logo}
+        />
             <Text style={styles.Title}>
-                Login
-            </Text>
-            <Text style={styles.txt}>
-                Start With Your Google Or Kakao Account
+                실시간 쓰레기 위치 가이드
             </Text>
             <View>
-                <TouchableOpacity style= {styles.button1} onPress={loginGoogle}>
-                    <Text style = {styles.button1_txt}>Login in Google</Text>
+                <TouchableOpacity style= {styles.button1}>
+                <View>
+                <Text style = {styles.button1_txt}>G    구글 계정으로 로그인</Text> 
+                </View>
                 </TouchableOpacity>
-                <Text>
-
-                </Text>
                 <TouchableOpacity style={styles.button2}>
-                    <Text style={styles.button2_txt}>Login in Kakao</Text>
+                 <Image source={Kakao}></Image>
+                    <Text style={styles.button2_txt}>카카오 계정으로 로그인</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button3}>
-                    <Text style={styles.button3_txt}>로그인 없이 이용하기</Text>
+                    <Text style>로그인 없이 시작하기</Text>
                 </TouchableOpacity>
             </View>
         </View>
     )
+};
+
+const styles = StyleSheet.create({
+    container :  {
+        alignSelf : 'center',
+        top : 150
+    },
+
+    Image_Logo : {
+        top : 20,
+        width : 200,
+        height : 200,
+        alignSelf : 'center'
+    },
+
+    Image_kakao : {
+        alignSelf : 'auto',
+        width : 100,
+        height : 100
+    },
+
+    button1 : {
+        width : 300,
+        height : 45,
+        top : 120,
+        borderRadius : 5,
+        backgroundColor : '#EA4335',
+        alignSelf : 'center'
+    },
+    button1_txt : {
+        top : 9,
+        alignSelf : 'center',
+        fontSize : 16,
+        color : '#FFFFFF',
+        fontWeight : "bold"
+    },
+    button2 : {
+        width : 300,
+        height : 45,
+        top : 130,
+        borderRadius : 5,
+        backgroundColor : '#FAE100',
+        alignSelf : 'center'
+    },
+    button2_txt : {
+        top : 5,
+        fontSize : 16,
+        color : '#000000',
+        fontWeight : "bold", 
+        alignSelf : 'center'
+    },
+    Title : {
+        top : 45,
+        alignSelf : 'center',
+        fontSize : 19,
+        color : '#000000',
+        fontWeight : "bold"
+    },
+    button3 : {
+        alignSelf : 'center',
+        width : 130,
+        height : 30,
+        top : 150,
+        Color : '#FFFFFF',
+        alignSelf : 'center'
+    },
+    button3_txt : {
+        color : '#ffffff',
+        fontSize : 11,
+        fontWeight : 'bold'
+    }
+})
 };
 
 const styles = StyleSheet.create({
