@@ -1,29 +1,31 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import { TouchableWithoutFeedback, View, StyleSheet, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import { TouchableWithoutFeedback, View, StyleSheet } from "react-native";
 
-import NaverMapView from "react-native-nmap";
-import { FloatingButton } from "@components/FloatingButton";
+import NaverMapView, {Circle, Path, Polyline, Polygon} from "react-native-nmap";
+import { Marker } from "react-native-nmap";
+import { FloatingButton } from "../components/FloatingButton";
+import Icon from "react-native-vector-icons/Feather";
 import Geolocation from '@react-native-community/geolocation';
-import { Marker } from "react-native-nmap/index";
-import { useInterval } from "@hooks/Hooks.js";
-import MyLocationPin from "@components/MyLocationPin";
+import { useInterval } from "../hooks/Hooks";
+import MyLocationPin from "../components/MyLocationPin";
 import MyLocationButton from "../components/MyLocationButton";
 
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-
-const Main = ({ navigation })  => {
+const Main = ({ navigation }) => {
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
 
-    // ref
-    const bottomSheetModalRef = useRef(null);
+    const P0 = {latitude: 37.4246382, longitude: 126.7484113};
+    const P1 = {latitude: 37.4246383, longitude: 126.7484113};
+    const P2 = {latitude: 37.4246385, longitude: 126.7484115};
 
-    // variables
-    const snapPoints = useMemo(() => ['25%', '50%', '100%'], []);
+    const Marker = () => {
+        <div>
+            <image src="../assets/marker_icon.png"></image>
+        </div>
+    }
 
     useEffect(() => {
         setGeoLocation();
-        bottomSheetModalRef.current?.present();
     }, []);
 
     useInterval(() => {
@@ -50,16 +52,6 @@ const Main = ({ navigation })  => {
 
     return (
         <View>
-            <BottomSheetModal
-                ref={bottomSheetModalRef}
-                index={1}
-                snapPoints={snapPoints}
-            >
-                <View>
-                    <Text>Awesome 🎉</Text>
-                </View>
-            </BottomSheetModal>
-
             {
                 findLocation ? (
                     <NaverMapView
@@ -75,6 +67,9 @@ const Main = ({ navigation })  => {
                         >
                             <MyLocationPin />
                         </Marker>
+                        <Marker coordinate={P0} image={require("../assets/marker_icon.png")} width={20} height={20}>
+
+                        </Marker>
                     </NaverMapView>
                 ) : (
                     <NaverMapView
@@ -89,7 +84,7 @@ const Main = ({ navigation })  => {
 
             <MyLocationButton findLocation={findLocation} setFindLocation={setFindLocation} />
 
-            <FloatingButton />
+            <FloatingButton navigation={navigation} />
         </View>
     );
 }
