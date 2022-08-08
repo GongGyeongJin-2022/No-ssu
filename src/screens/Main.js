@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { TouchableWithoutFeedback, View, StyleSheet } from "react-native";
+import {TouchableWithoutFeedback, View, StyleSheet, Image} from "react-native";
 
 import NaverMapView, {Circle, Path, Polyline, Polygon} from "react-native-nmap";
 import { Marker } from "react-native-nmap";
@@ -9,20 +9,15 @@ import Geolocation from '@react-native-community/geolocation';
 import { useInterval } from "../hooks/Hooks";
 import MyLocationPin from "../components/MyLocationPin";
 import MyLocationButton from "../components/MyLocationButton";
+import marker_icon from "@assets/img/marker_icon.png"
 
 const Main = ({ navigation }) => {
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
 
-    const P0 = {latitude: 37.4246382, longitude: 126.7484113};
-    const P1 = {latitude: 37.4246383, longitude: 126.7484113};
-    const P2 = {latitude: 37.4246385, longitude: 126.7484115};
-
-    const Marker = () => {
-        <div>
-            <image src="../assets/marker_icon.png"></image>
-        </div>
-    }
+    const P0 = {latitude: 37.564362, longitude: 126.977011};
+    const P1 = {latitude: 37.565051, longitude: 126.978567};
+    const P2 = {latitude: 37.565383, longitude: 126.976292};
 
     useEffect(() => {
         setGeoLocation();
@@ -52,14 +47,15 @@ const Main = ({ navigation }) => {
 
     return (
         <View>
-            {
-                findLocation ? (
-                    <NaverMapView
-                        style={{width: '100%', height: '100%'}}
-                        showsMyLocationButton={false}
-                        center={{latitude: parseFloat(location.latitude), longitude: parseFloat(location.longitude)}}
-                        setLocationTrackingMode={3}
-                    >
+
+            <NaverMapView
+                style={{width: '100%', height: '100%'}}
+                showsMyLocationButton={false}
+                center={{latitude: parseFloat(location.latitude), longitude: parseFloat(location.longitude)}}
+                setLocationTrackingMode={3}
+            >
+                {
+                    findLocation ? (
                         <Marker
                             coordinate={{latitude: location.latitude, longitude: location.longitude}}
                             width={18}
@@ -67,20 +63,12 @@ const Main = ({ navigation }) => {
                         >
                             <MyLocationPin />
                         </Marker>
-                        <Marker coordinate={P0} image={require("../assets/marker_icon.png")} width={20} height={20}>
+                    ) : null
+                }
+                <Marker coordinate={P0} pinColor="green" onClick={() => console.warn('onClick! p0')} width={30} height={30} image={marker_icon}/>
+            </NaverMapView>
 
-                        </Marker>
-                    </NaverMapView>
-                ) : (
-                    <NaverMapView
-                        style={{width: '100%', height: '100%'}}
-                        showsMyLocationButton={false}
-                        center={{latitude: parseFloat(location.latitude), longitude: parseFloat(location.longitude)}}
-                        setLocationTrackingMode={3}
-                    >
-                    </NaverMapView>
-                )
-            }
+
 
             <MyLocationButton findLocation={findLocation} setFindLocation={setFindLocation} />
 
