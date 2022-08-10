@@ -7,8 +7,11 @@ import {
     TouchableWithoutFeedback,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
+import {useSetRecoilState} from "recoil";
+import {screenState} from "@apis/atoms";
 
 export const FloatingButton = () => {
+    const setScreen = useSetRecoilState(screenState)
     const [animation, setAnimation] = useState(new Animated.Value(0));
     const [open, setOpen] = useState(0);
 
@@ -51,13 +54,13 @@ export const FloatingButton = () => {
         <View style={styles.container}>
             {open ? (
                 <>
-                    <TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback onPress={() => {setScreen("Upload")}}>
                         <Animated.View style={[styles.button, styles.item, pinStyle]}>
                             <Icon name="map-pin" size={20} color="#93CE92" />
                         </Animated.View>
                     </TouchableWithoutFeedback>
 
-                    <TouchableWithoutFeedback>
+                    <TouchableWithoutFeedback onPress={() => {setScreen("Mypage")}}>
                         <Animated.View style={[styles.button, styles.item, userStyle]}>
                             <Icon name="user" size={20} color="#6EBFB0" />
                         </Animated.View>

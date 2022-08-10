@@ -10,8 +10,11 @@ import MyLocationPin from "@components/MyLocationPin";
 import MyLocationButton from "../components/MyLocationButton";
 
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
+import {useRecoilValue} from "recoil";
+import {screenState} from "@apis/atoms";
 
 const Main = ({ navigation })  => {
+    const screen = useRecoilValue(screenState)
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
 
@@ -19,7 +22,7 @@ const Main = ({ navigation })  => {
     const bottomSheetModalRef = useRef(null);
 
     // variables
-    const snapPoints = useMemo(() => ['25%', '50%', '100%'], []);
+    const snapPoints = useMemo(() => ['5%', '25%', '50%', '100%'], []);
 
     useEffect(() => {
         setGeoLocation();
@@ -56,7 +59,27 @@ const Main = ({ navigation })  => {
                 snapPoints={snapPoints}
             >
                 <View>
-                    <Text>Awesome 🎉</Text>
+                    {
+                        screen === "Main" ? (
+                            <>
+                                <Text>
+                                    Main
+                                </Text>
+                            </>
+                        ) : screen === "Upload" ? (
+                            <>
+                                <Text>
+                                    Upload
+                                </Text>
+                            </>
+                        ) : screen === "Mypage" ? (
+                            <>
+                                <Text>
+                                    Mypage
+                                </Text>
+                            </>
+                        ) : null
+                    }
                 </View>
             </BottomSheetModal>
 
