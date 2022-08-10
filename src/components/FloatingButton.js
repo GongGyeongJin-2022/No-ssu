@@ -9,11 +9,17 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import {useSetRecoilState} from "recoil";
 import {screenState} from "@apis/atoms";
+import {useBottomSheetModalRef} from "@hooks/Hooks";
 
 export const FloatingButton = () => {
-    const setScreen = useSetRecoilState(screenState)
+    const setScreen = useSetRecoilState(screenState);
+    const bottomSheetModalRef = useBottomSheetModalRef();
     const [animation, setAnimation] = useState(new Animated.Value(0));
     const [open, setOpen] = useState(0);
+
+    useEffect(() => {
+        console.log("bottomSheetModalRef", bottomSheetModalRef);
+    }, [JSON.stringify(bottomSheetModalRef)]);
 
     const userStyle = {
         transform: [
@@ -54,7 +60,9 @@ export const FloatingButton = () => {
         <View style={styles.container}>
             {open ? (
                 <>
-                    <TouchableWithoutFeedback onPress={() => {setScreen("Upload")}}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        bottomSheetModalRef.current?.present();
+                        setScreen("Upload")}}>
                         <Animated.View style={[styles.button, styles.item, pinStyle]}>
                             <Icon name="map-pin" size={20} color="#93CE92" />
                         </Animated.View>

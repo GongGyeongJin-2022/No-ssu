@@ -5,7 +5,7 @@ import NaverMapView from "react-native-nmap";
 import { FloatingButton } from "@components/FloatingButton";
 import Geolocation from '@react-native-community/geolocation';
 import { Marker } from "react-native-nmap/index";
-import { useInterval } from "@hooks/Hooks.js";
+import {useBottomSheetModalRef, useInterval} from "@hooks/Hooks.js";
 import MyLocationPin from "@components/MyLocationPin";
 import MyLocationButton from "../components/MyLocationButton";
 
@@ -19,15 +19,20 @@ const Main = ({ navigation })  => {
     const [findLocation, setFindLocation] = useState(false);
 
     // ref
-    const bottomSheetModalRef = useRef(null);
+    const bottomSheetModalRef = useBottomSheetModalRef();
 
     // variables
     const snapPoints = useMemo(() => ['5%', '25%', '50%', '100%'], []);
 
     useEffect(() => {
         setGeoLocation();
-        bottomSheetModalRef.current?.present();
     }, []);
+
+    useEffect(() => {
+        if(bottomSheetModalRef.current) {
+            bottomSheetModalRef.current.present();
+        }
+    },[bottomSheetModalRef])
 
     useInterval(() => {
         if (findLocation) {

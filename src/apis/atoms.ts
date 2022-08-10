@@ -21,3 +21,9 @@ export const screenState = atom<Screen> ({
     key: "screen",
     default: "Main"
 });
+
+export const bottomSheetModalRefState = atom ({
+    key: "bottomSheetModalRef",
+    default: null
+});
+
