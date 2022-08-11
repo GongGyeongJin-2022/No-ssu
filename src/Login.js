@@ -5,7 +5,8 @@ import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-sign
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {googleLoginSelector, tokenSelector} from "@apis/selectors";
 import {GOOGLELOGIN_POST_ERROR} from "@apis/types";
-import {Token} from "@apis/atoms";
+import Logo from "@assets/img/No_ssu_logo.png"
+import Kakao from "@assets/img/kakao-talk.png"
 
 GoogleSignin.configure({
     scopes: [
@@ -77,14 +78,18 @@ const Login = ({ navigation }) => {
                 실시간 쓰레기 위치 가이드
             </Text>
             <View>
-                <TouchableOpacity style= {styles.button1}>
+                <TouchableOpacity style= {styles.button1} onPress={loginGoogle}>
                 <View>
                 <Text style = {styles.button1_txt}>G    구글 계정으로 로그인</Text> 
                 </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button2}>
-                 <Image source={Kakao}></Image>
-                    <Text style={styles.button2_txt}>카카오 계정으로 로그인</Text>
+                    <View>
+                        <Image source={Kakao} style={styles.kakao_img}></Image>
+                        <Text style={styles.button2_txt}>카카오 계정으로 로그인</Text>
+
+                    </View>
+
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.button3}>
                     <Text style>로그인 없이 시작하기</Text>
@@ -156,88 +161,16 @@ const styles = StyleSheet.create({
         height : 30,
         top : 150,
         Color : '#FFFFFF',
-        alignSelf : 'center'
     },
     button3_txt : {
         color : '#ffffff',
         fontSize : 11,
         fontWeight : 'bold'
+    },
+    kakao_img: {
+        width: 50,
+        height: 50
     }
-})
-};
-
-const styles = StyleSheet.create({
-    container :  {
-        alignSelf : 'center',
-    },
-    button1 : {
-        width : 264,
-        height : 50,
-        top : 230,
-        borderRadius : 30,
-        backgroundColor : '#93CE92',
-        alignSelf : 'center',
-        borderColor : '#000000',
-        borderWidth : 4
-    },
-    button1_txt : {
-        alignSelf : 'center',
-        fontSize : 17,
-        color : '#000000',
-        fontWeight : "bold"
-    },
-    button2 : {
-        width : 264,
-        height : 50,
-        top : 250,
-        Color : '#FFFFFF',
-        borderRadius : 30,
-        backgroundColor : '#93CE92',
-        alignSelf : 'center',
-        borderColor : '#000000',
-        borderWidth : 4
-    },
-    button2_txt : {
-        alignSelf : 'center',
-        fontSize : 17,
-        color : '#000000',
-        fontWeight : "bold"
-    },
-    Title : {
-        top : 140,
-        alignSelf : 'center',
-        fontSize : 30,
-        color : '#000000',
-        fontWeight : "bold"
-    },
-    txt : {
-        alignSelf : 'center',
-        fontSize : 15,
-        top : 153
-    },
-    image : {
-        top : 130,
-        alignSelf : 'center',
-        width : 100,
-        height :100
-    },
-    button3 : {
-        width : 150,
-        height : 30,
-        top : 300,
-        backgroundColor : '#6EBFB0',
-        Color : '#000000',
-        borderRadius : 30,
-        alignSelf : 'center',
-        borderWidth : 2,
-        borderColor : '#000000'
-    },
-    button3_txt : {
-        alignSelf : 'center',
-        color : '#ffffff',
-        fontSize : 12,
-        fontWeight : 'bold'
-    }
-})
+});
 
 export default Login;
