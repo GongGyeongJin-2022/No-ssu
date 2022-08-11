@@ -22,14 +22,15 @@ const Main = ({ navigation })  => {
     const bottomSheetModalRef = useBottomSheetModalRef();
 
     // variables
-    const snapPoints = useMemo(() => ['5%', '25%', '50%', '100%'], []);
+    const snapPoints = useMemo(() => ['3%', '25%', '50%', '100%'], []);
 
     useEffect(() => {
         setGeoLocation();
     }, []);
 
     useEffect(() => {
-        if(bottomSheetModalRef.current) {
+        console.log("bottomSheetModalRef", bottomSheetModalRef)
+        if(bottomSheetModalRef!==undefined && bottomSheetModalRef.current) {
             bottomSheetModalRef.current.present();
         }
     },[bottomSheetModalRef])
