@@ -1,10 +1,17 @@
 import React from "react";
-import { Text, View } from "react-native";
+import {Button, View} from "react-native";
+import {usePostMarkerCallback} from "@apis/apiCallbackes";
 
 const Upload = () => {
+    const submit = () => {
+        usePostMarkerCallback({
+
+        })
+    }
+
     return (
         <View>
-            <Text style={{color: 'black'}}>MyPage</Text>
+            <Button title={"submit"} onPress={submit}></Button>
         </View>
     );
 };
