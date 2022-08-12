@@ -71,7 +71,7 @@ const Login = ({navigation}) => {
             <Text style={styles.title}>
                 실시간 쓰레기 위치 가이드
             </Text>
-                <TouchableOpacity style= {styles.googleButton}>
+                <TouchableOpacity style= {styles.googleButton} onPress={loginGoogle}>
                 <Text style={styles.googleLogo}>G</Text>
                 <Text style = {styles.googleButtonText}>구글 계정으로 로그인</Text>
                 </TouchableOpacity>
@@ -81,7 +81,7 @@ const Login = ({navigation}) => {
                     <Text style={styles.kakaoButtonText}>카카오 계정으로 로그인</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={styles.noLoginButton}>
+                <TouchableOpacity style={styles.noLoginButton} onPress={() => {navigation.push("Main")}}>
                     <Text style={styles.noLoginButtonText}>로그인 없이 시작하기</Text>
                 </TouchableOpacity>
         </View>
