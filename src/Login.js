@@ -1,12 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-import user_interface from '@assets/img/user_interface.png'
 import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-signin';
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {googleLoginSelector, tokenSelector} from "@apis/selectors";
 import {GOOGLELOGIN_POST_ERROR} from "@apis/types";
-import Logo from "@assets/img/No_ssu_logo.png"
-import Kakao from "@assets/img/kakao-talk.png"
+import Logo from "@assets/No_ssu_logo.png"
+import Kakao from "@assets/kakao-talk.png"
 
 GoogleSignin.configure({
     scopes: [
@@ -21,7 +20,8 @@ GoogleSignin.configure({
     //iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 });
 
-const Login = ({ navigation }) => {
+
+const Login = ({navigation}) => {
     const [user, setUser] = useState();
     const [body, setBody] = useState({});
     const setToken = useSetRecoilState(tokenSelector);
@@ -72,25 +72,20 @@ const Login = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-        <Image source={Logo} style={styles.Image_Logo}
-        />
+        <Image source={Logo} style={styles.Image_Logo}></Image>
             <Text style={styles.Title}>
                 실시간 쓰레기 위치 가이드
             </Text>
             <View>
-                <TouchableOpacity style= {styles.button1} onPress={loginGoogle}>
-                <View>
-                <Text style = {styles.button1_txt}>G    구글 계정으로 로그인</Text> 
-                </View>
+                <TouchableOpacity style= {styles.button1}>
+                <Text style = {styles.button1_txt}>G       구글 계정으로 로그인</Text> 
                 </TouchableOpacity>
+
                 <TouchableOpacity style={styles.button2}>
-                    <View>
-                        <Image source={Kakao} style={styles.kakao_img}></Image>
-                        <Text style={styles.button2_txt}>카카오 계정으로 로그인</Text>
-
-                    </View>
-
+                            <Text style={styles.button2_txt}>카카오 계정으로 로그인</Text>
+                            <Image source={Kakao} style={styles.Image_kakao}></Image>
                 </TouchableOpacity>
+
                 <TouchableOpacity style={styles.button3}>
                     <Text style>로그인 없이 시작하기</Text>
                 </TouchableOpacity>
@@ -113,9 +108,10 @@ const styles = StyleSheet.create({
     },
 
     Image_kakao : {
-        alignSelf : 'auto',
-        width : 100,
-        height : 100
+        left : 55,
+        width : 25,
+        height : 25,
+        top : -12
     },
 
     button1 : {
@@ -142,11 +138,11 @@ const styles = StyleSheet.create({
         alignSelf : 'center'
     },
     button2_txt : {
-        top : 5,
+        top : 9,
         fontSize : 16,
         color : '#000000',
-        fontWeight : "bold", 
-        alignSelf : 'center'
+        fontWeight : "bold",
+        left : 100
     },
     Title : {
         top : 45,
@@ -166,10 +162,6 @@ const styles = StyleSheet.create({
         color : '#ffffff',
         fontSize : 11,
         fontWeight : 'bold'
-    },
-    kakao_img: {
-        width: 50,
-        height: 50
     }
 });
 
