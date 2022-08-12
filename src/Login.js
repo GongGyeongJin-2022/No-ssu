@@ -1,11 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import user_interface from '@assets/img/user_interface.png'
 import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-signin';
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {googleLoginSelector, tokenSelector} from "@apis/selectors";
 import {GOOGLELOGIN_POST_ERROR} from "@apis/types";
 import Logo from "@assets/img/No_ssu_logo.png"
 import Kakao from "@assets/img/kakao-talk.png"
+import {useRecoilState} from "recoil";
+import {tokenState} from "@apis/atoms";
+import {usePostGoogleLoginFinishCallback} from "@apis/apiCallbackes";
 
 GoogleSignin.configure({
     scopes: [
@@ -20,34 +24,25 @@ GoogleSignin.configure({
     //iosClientId: '<FROM DEVELOPER CONSOLE>', // [iOS] if you want to specify the client ID of type iOS (otherwise, it is taken from GoogleService-Info.plist)
 });
 
-
 const Login = ({navigation}) => {
     const [user, setUser] = useState();
-    const [body, setBody] = useState({});
-    const setToken = useSetRecoilState(tokenSelector);
-    const googleLoginResponse = useRecoilValue(googleLoginSelector(body));
+    const [token, setToken] = useRecoilState(tokenState);
+    const postGoogleLoginFinishCallback = usePostGoogleLoginFinishCallback();
+
+    useEffect(() => {
+        console.log("token", token);
+    },[token])
 
     useEffect(() => {
         if(user) {
             console.log("user", user);
-            setBody({
+            postGoogleLoginFinishCallback({
                 "code": user.serverAuthCode,
                 "id_token": user.idToken
-            });
-
-            navigation.navigate("Main");
+            }).then(r => {navigation.navigate("Main")})
         }
 
     },[JSON.stringify(user)]);
-
-    useEffect(() => {
-        console.log("googleLoginResponse : ", googleLoginResponse);
-        if(googleLoginResponse === GOOGLELOGIN_POST_ERROR) {
-            console.log("login fail!");
-        } else {
-            setToken({accessToken: googleLoginResponse.access_token, refreshToken: googleLoginResponse.refresh_token});
-        }
-    },[googleLoginResponse])
 
     const loginGoogle = async () => {
         try {
