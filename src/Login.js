@@ -2,6 +2,11 @@ import React, {useEffect, useState} from 'react';
 import { Image, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import user_interface from '@assets/img/user_interface.png'
 import {GoogleSignin, statusCodes} from '@react-native-google-signin/google-signin';
+import {useRecoilValue, useSetRecoilState} from "recoil";
+import {googleLoginSelector, tokenSelector} from "@apis/selectors";
+import {GOOGLELOGIN_POST_ERROR} from "@apis/types";
+import Logo from "@assets/img/No_ssu_logo.png"
+import Kakao from "@assets/img/kakao-talk.png"
 import {useRecoilState} from "recoil";
 import {tokenState} from "@apis/atoms";
 import {usePostGoogleLoginFinishCallback} from "@apis/apiCallbackes";
@@ -62,105 +67,99 @@ const Login = ({navigation}) => {
 
     return (
         <View style={styles.container}>
-            <Image
-                style={styles.image}
-                source={user_interface}/>
-            <Text style={styles.Title}>
-                Login
+            <Image source={Logo} style={styles.imageLogo}></Image>
+            <Text style={styles.title}>
+                실시간 쓰레기 위치 가이드
             </Text>
-            <Text style={styles.txt}>
-                Start With Your Google Or Kakao Account
-            </Text>
-            <View>
-                <TouchableOpacity style= {styles.button1} onPress={loginGoogle}>
-                    <Text style = {styles.button1_txt}>Login in Google</Text>
+                <TouchableOpacity style= {styles.googleButton} onPress={loginGoogle}>
+                <Text style={styles.googleLogo}>G</Text>
+                <Text style = {styles.googleButtonText}>구글 계정으로 로그인</Text>
                 </TouchableOpacity>
-                <Text>
 
-                </Text>
-                <TouchableOpacity style={styles.button2}>
-                    <Text style={styles.button2_txt}>Login in Kakao</Text>
+                <TouchableOpacity style={styles.kakaoButton}>
+                    <Image source={Kakao} style={styles.kakaoLogo}></Image>
+                    <Text style={styles.kakaoButtonText}>카카오 계정으로 로그인</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.button3}>
-                    <Text style={styles.button3_txt}>로그인 없이 이용하기</Text>
+
+                <TouchableOpacity style={styles.noLoginButton} onPress={() => {navigation.push("Main")}}>
+                    <Text style={styles.noLoginButtonText}>로그인 없이 시작하기</Text>
                 </TouchableOpacity>
-            </View>
         </View>
     )
 };
 
 const styles = StyleSheet.create({
     container :  {
-        alignSelf : 'center',
+        alignItems: "center",
+        marginTop: "30%"
     },
-    button1 : {
-        width : 264,
-        height : 50,
-        top : 230,
-        borderRadius : 30,
-        backgroundColor : '#93CE92',
-        alignSelf : 'center',
-        borderColor : '#000000',
-        borderWidth : 4
-    },
-    button1_txt : {
-        alignSelf : 'center',
-        fontSize : 17,
+    title : {
+        fontSize : 19,
         color : '#000000',
         fontWeight : "bold"
     },
-    button2 : {
-        width : 264,
-        height : 50,
-        top : 250,
-        Color : '#FFFFFF',
-        borderRadius : 30,
-        backgroundColor : '#93CE92',
-        alignSelf : 'center',
-        borderColor : '#000000',
-        borderWidth : 4
+    imageLogo : {
+        width : 240,
+        height : 240,
     },
-    button2_txt : {
-        alignSelf : 'center',
-        fontSize : 17,
+    kakaoLogo : {
+        position: "absolute",
+        left: 10,
+        width : 25,
+        height : 25,
+    },
+    googleButton : {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: "30%",
+        width : 300,
+        height : 45,
+        borderRadius : 5,
+        backgroundColor : '#EA4335',
+        padding: 10
+    },
+    googleButtonText : {
+        fontSize : 16,
+        color : '#FFFFFF',
+        fontWeight : "bold",
+    },
+    kakaoButton : {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
+        marginTop: "5%",
+        width : 300,
+        height : 45,
+        borderRadius : 5,
+        backgroundColor : '#FAE100',
+        padding: 10
+    },
+    kakaoButtonText : {
+        fontSize : 16,
         color : '#000000',
-        fontWeight : "bold"
+        fontWeight : "bold",
     },
-    Title : {
-        top : 140,
-        alignSelf : 'center',
-        fontSize : 30,
-        color : '#000000',
-        fontWeight : "bold"
+    googleLogo: {
+        position: "absolute",
+        left: 15,
+        width : 40,
+        height : 40,
+        fontSize: 28,
+        fontWeight: "bold",
+        color: "#ffffff"
     },
-    txt : {
-        alignSelf : 'center',
-        fontSize : 15,
-        top : 153
-    },
-    image : {
-        top : 130,
-        alignSelf : 'center',
-        width : 100,
-        height :100
-    },
-    button3 : {
-        width : 150,
+    noLoginButton : {
+        width : 130,
         height : 30,
-        top : 300,
-        backgroundColor : '#6EBFB0',
-        Color : '#000000',
-        borderRadius : 30,
-        alignSelf : 'center',
-        borderWidth : 2,
-        borderColor : '#000000'
+        marginTop: "5%",
+        color : '#FFFFFF',
     },
-    button3_txt : {
-        alignSelf : 'center',
-        color : '#ffffff',
+    noLoginButtonText : {
+        color : '#9f9f9f',
         fontSize : 12,
         fontWeight : 'bold'
     }
-})
+});
 
 export default Login;
