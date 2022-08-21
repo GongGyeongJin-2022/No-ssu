@@ -1,18 +1,20 @@
-import React, {useEffect} from 'react';
-import {SafeAreaView, Text} from "react-native";
-import 'react-native-gesture-handler';
+import React, { useEffect } from "react";
+import { Text } from "react-native";
+
+import {RecoilRoot, useRecoilValue} from "recoil";
 import ReactNativeRecoilPersist, {
     ReactNativeRecoilPersistGate,
 } from "react-native-recoil-persist";
-import Main from '@screens/Main';
-import Login from '~/Login';
+import {tokenState} from "@apis/atoms";
 
-import {RecoilRoot, useRecoilState, useRecoilValue} from "recoil";
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {tokenState} from "@apis/atoms";
+
+import Main from '@screens/Main';
+import Login from '@screens/Login';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,15 +29,10 @@ const RootNavigator = () => {
         <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{ headerShown: false }}
+                initialRouteName={token ? "Login" : "Main"}
             >
-                {/* token이 있다면 main, 아니면 login으로 네비게이팅 */}
-                { token.accessToken === null ? (
-                        <>
-                            <Stack.Screen name="Login" component={Login} />
-                        </>
-                    ) : null
-                }
                 <Stack.Screen name="Main" component={Main} />
+                <Stack.Screen name="Login" component={Login} />
             </Stack.Navigator>
         </NavigationContainer>
     )

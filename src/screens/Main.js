@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import {TouchableWithoutFeedback, View, StyleSheet, Image} from "react-native";
+import React, { useEffect, useMemo, useState } from "react";
+import { View, Text } from "react-native";
 
 import NaverMapView from "react-native-nmap";
 import { FloatingButton } from "@components/FloatingButton";
@@ -8,13 +8,11 @@ import { Marker } from "react-native-nmap";
 import { useBottomSheetModalRef, useInterval } from "@hooks/Hooks.js";
 import MyLocationPin from "@components/MyLocationPin";
 import MyLocationButton from "../components/MyLocationButton";
-import Icon from "react-native-vector-icons/Feather";
 
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import {useRecoilValue} from "recoil";
 import {screenState} from "@apis/atoms";
 import marker_icon from "@assets/img/marker_icon.png"
-
 
 const Main = ({ navigation }) => {
     const screen = useRecoilValue(screenState)
@@ -113,8 +111,6 @@ const Main = ({ navigation }) => {
                 }
                 <Marker coordinate={P0} pinColor="green" onClick={() => console.warn('onClick! p0')} width={30} height={30} image={marker_icon}/>
             </NaverMapView>
-
-
 
             <MyLocationButton findLocation={findLocation} setFindLocation={setFindLocation} />
 
