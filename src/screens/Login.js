@@ -39,7 +39,7 @@ const Login = ({navigation}) => {
             postGoogleLoginFinishCallback({
                 "code": user.serverAuthCode,
                 "id_token": user.idToken
-            }).then(r => {navigation.navigate("Main")})
+            })
         }
 
     },[JSON.stringify(user)]);
