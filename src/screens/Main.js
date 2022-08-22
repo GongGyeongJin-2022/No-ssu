@@ -1,42 +1,26 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { View, Text } from "react-native";
+import React, { useEffect, useState } from "react";
+import { View } from "react-native";
 
 import NaverMapView from "react-native-nmap";
 import { FloatingButton } from "@components/FloatingButton";
 import Geolocation from '@react-native-community/geolocation';
 import { Marker } from "react-native-nmap";
-import { useBottomSheetModalRef, useInterval } from "@hooks/Hooks.js";
+import { useInterval } from "@hooks/Hooks.js";
 import MyLocationPin from "@components/MyLocationPin";
 import MyLocationButton from "../components/MyLocationButton";
 
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import {useRecoilValue} from "recoil";
-import {screenState} from "@apis/atoms";
 import marker_icon from "@assets/img/marker_icon.png"
+import BottomSheet from "@components/BottomSheet";
 
 const Main = ({ navigation }) => {
-    const screen = useRecoilValue(screenState)
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
-
-    // ref
-    const bottomSheetModalRef = useBottomSheetModalRef();
-
-    // variables
-    const snapPoints = useMemo(() => ['3%', '25%', '50%', '100%'], []);
 
     const P0 = {latitude: 37.564362, longitude: 126.977011};
 
     useEffect(() => {
         setGeoLocation();
     }, []);
-
-    useEffect(() => {
-        console.log("bottomSheetModalRef", bottomSheetModalRef)
-        if(bottomSheetModalRef!==undefined && bottomSheetModalRef.current) {
-            bottomSheetModalRef.current.present();
-        }
-    },[bottomSheetModalRef])
 
     useInterval(() => {
         if (findLocation) {
@@ -62,36 +46,7 @@ const Main = ({ navigation }) => {
 
     return (
         <View>
-            <BottomSheetModal
-                ref={bottomSheetModalRef}
-                index={1}
-                snapPoints={snapPoints}
-            >
-                <View>
-                    {
-                        screen === "Main" ? (
-                            <>
-                                <Text>
-                                    Main
-                                </Text>
-                            </>
-                        ) : screen === "Upload" ? (
-                            <>
-                                <Text>
-                                    Upload
-                                </Text>
-                            </>
-                        ) : screen === "Mypage" ? (
-                            <>
-                                <Text>
-                                    Mypage
-                                </Text>
-                            </>
-                        ) : null
-                    }
-                </View>
-            </BottomSheetModal>
-
+            <BottomSheet />
             <NaverMapView
                 style={{width: '100%', height: '100%'}}
                 showsMyLocationButton={false}
