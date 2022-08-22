@@ -1,7 +1,6 @@
 import {useEffect, useRef} from "react";
 import {useRecoilState} from "recoil";
 import {bottomSheetModalRefState} from "@apis/atoms";
-import BottomSheet from "@gorhom/bottom-sheet";
 
 export const useInterval = (callback, delay) => {
     const savedCallback = useRef();

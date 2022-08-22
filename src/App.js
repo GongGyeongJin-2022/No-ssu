@@ -53,7 +53,7 @@ const App = () => {
                                 splash ?
                                     <LottieView
                                         source={require('@assets/splash.json')}
-                                        autoPlay={true}
+                                        autoPlay
                                         loop={false}
                                         onAnimationFinish={() => {
                                             setSplash(false);
