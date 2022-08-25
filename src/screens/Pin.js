@@ -27,7 +27,7 @@ const Pin = () => {
                     </View>
                 </View>
 
-                <Text style={{marginTop: 20}}>{pinData.description}</Text>
+                <Text style={styles.descriptionText}>{pinData.description}</Text>
             </View>
 
             <View style={styles.clearButton}>
@@ -73,6 +73,9 @@ const styles = StyleSheet.create({
     tagText: {
         fontSize: 12,
         color: '#252525'
+    },
+    descriptionText: {
+        marginTop: 20
     },
     clearButton: {
         display: 'flex',
