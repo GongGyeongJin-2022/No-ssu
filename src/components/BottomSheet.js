@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { Text, View } from "react-native";
 import { useBottomSheetModalRef } from "@hooks/Hooks";
 import { useRecoilState } from "recoil";
@@ -10,27 +10,37 @@ import Pin from "@screens/Pin";
 const BottomSheet = () => {
     const [screen, setScreen] = useRecoilState(screenState)
     const bottomSheetModalRef = useBottomSheetModalRef();
-    const snapPoints = useMemo(() => ['3%', '25%', '50%', '100%'], []);
-    const [index, setIndex] = useState(1);
+    const [snapPoints, setSnapPoints] = useState([]);
+
+    const { dismissAll } = useBottomSheetModal();
+
+    const snapPointsList = {
+        'Main': ['3%', '25%', '75%'],
+        'Pin': ['40%'],
+        'Upload': ['100%'],
+        'Mypage': ['100%'],
+
+        // Todo: 보완 필요
+        '': ['1%']
+    }
 
     useEffect(() => {
         if (bottomSheetModalRef.current) {
             bottomSheetModalRef.current.present();
-            if (screen === 'Main') setIndex(3);
-            else if (screen === 'Pin') setIndex(1);
-            else if (screen === 'Upload') setIndex(3);
-            else if (screen === 'Mypage') setIndex(3);
+            setSnapPoints(snapPointsList[screen])
+
+            if (screen === '') {
+                dismissAll();
+            }
         }
     },[bottomSheetModalRef, screen])
 
     return (
         <BottomSheetModal
             ref={bottomSheetModalRef}
-            index={index}
             snapPoints={snapPoints}
             onDismiss={() => {
                 setScreen('');
-                setIndex(-1);
             }}
         >
             <View>

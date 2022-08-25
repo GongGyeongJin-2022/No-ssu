@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View } from "react-native";
+import { Image, View } from "react-native";
 
 import NaverMapView from "react-native-nmap";
 import { FloatingButton } from "@components/FloatingButton";
@@ -9,7 +9,6 @@ import { useBottomSheetModalRef, useInterval } from "@hooks/Hooks.js";
 import MyLocationPin from "@components/MyLocationPin";
 import MyLocationButton from "../components/MyLocationButton";
 
-import marker_icon from "@assets/img/marker_icon.png"
 import BottomSheet from "@components/BottomSheet";
 import { useSetRecoilState } from "recoil";
 import { screenState } from "@apis/atoms";
@@ -23,7 +22,7 @@ const Main = ({ navigation }) => {
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
 
-    const P0 = {latitude: 37.564362, longitude: 126.977011};
+    const P0 = {latitude: 37.4214938, longitude: -122.083922};
 
     useEffect(() => {
         setGeoLocation();
@@ -61,6 +60,7 @@ const Main = ({ navigation }) => {
                 setLocationTrackingMode={3}
             >
                 {
+                    // 현 위치를 표시해주는 마커
                     findLocation ? (
                         <Marker
                             coordinate={{latitude: location.latitude, longitude: location.longitude}}
@@ -73,15 +73,18 @@ const Main = ({ navigation }) => {
                 }
                 <Marker
                     coordinate={P0}
-                    pinColor="green"
-                    onClick={() => {
+                    width={60}
+                    height={60}
+                    onClick={async () => {
                         bottomSheetModalRef.current?.present();
                         setScreen("Pin");
                     }}
-                    width={30}
-                    height={30}
-                    image={marker_icon}
-                />
+                >
+                    <Image
+                        source={require('@assets/img/marker_green.png')}
+                        style={{width: 60, height: 60}}
+                    />
+                </Marker>
             </NaverMapView>
 
             <MyLocationButton findLocation={findLocation} setFindLocation={setFindLocation} />
