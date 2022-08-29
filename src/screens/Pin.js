@@ -75,6 +75,7 @@ const styles = StyleSheet.create({
         color: '#252525'
     },
     descriptionText: {
+        color: '#252525',
         marginTop: 20
     },
     clearButton: {
