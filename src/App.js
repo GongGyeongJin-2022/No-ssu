@@ -1,18 +1,22 @@
-import React, {useEffect} from 'react';
-import {SafeAreaView, Text} from "react-native";
-import 'react-native-gesture-handler';
+import React, { useEffect, useState } from "react";
+import { Text } from "react-native";
+
+import {RecoilRoot, useRecoilValue} from "recoil";
 import ReactNativeRecoilPersist, {
     ReactNativeRecoilPersistGate,
 } from "react-native-recoil-persist";
-import Main from '@screens/Main';
-import Login from '~/Login';
+import {tokenState} from "@apis/atoms";
 
-import {RecoilRoot, useRecoilState, useRecoilValue} from "recoil";
 import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { NavigationContainer } from '@react-navigation/native';
+
+import { NavigationContainer, useNavigation } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import {tokenState} from "@apis/atoms";
+
+import LottieView from 'lottie-react-native';
+
+import Main from '@screens/Main';
+import Login from '@screens/Login';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,28 +31,36 @@ const RootNavigator = () => {
         <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{ headerShown: false }}
+                initialRouteName={token ? "Main" : "Login"}
             >
-                {/* token이 있다면 main, 아니면 login으로 네비게이팅 */}
-                { token.accessToken === null ? (
-                        <>
-                            <Stack.Screen name="Login" component={Login} />
-                        </>
-                    ) : null
-                }
                 <Stack.Screen name="Main" component={Main} />
+                <Stack.Screen name="Login" component={Login} />
             </Stack.Navigator>
         </NavigationContainer>
     )
 }
 
 const App = () => {
+    const [splash, setSplash] = useState(true);
+
     return (
         <RecoilRoot>
             <ReactNativeRecoilPersistGate store={ReactNativeRecoilPersist}>
                 <React.Suspense fallback={<Text>Loading...</Text>}>
                     <GestureHandlerRootView style={{flex: 1}}>
                         <BottomSheetModalProvider>
-                            <RootNavigator/>
+                            {
+                                splash ?
+                                    <LottieView
+                                        source={require('@assets/splash.json')}
+                                        autoPlay
+                                        loop={false}
+                                        onAnimationFinish={() => {
+                                            setSplash(false);
+                                        }}
+                                        style={{backgroundColor: '#73B5CE'}}
+                                    /> : <RootNavigator />
+                            }
                         </BottomSheetModalProvider>
                     </GestureHandlerRootView>
                 </React.Suspense>

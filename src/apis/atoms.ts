@@ -13,4 +13,19 @@ export const tokenState = atom<Token> ({
         refreshToken: null
     },
     effects_UNSTABLE: [ReactNativeRecoilPersist.persistAtom],
-})
+});
+
+const screens = ['Mypage', 'Upload', 'Main'] as const;
+
+type Screen = typeof screens[keyof typeof screens];
+
+export const screenState = atom<Screen> ({
+    key: "screen",
+    default: "Main"
+});
+
+export const bottomSheetModalRefState = atom ({
+    key: "bottomSheetModalRef",
+    default: null
+});
+
