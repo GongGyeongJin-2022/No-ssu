@@ -1,23 +1,28 @@
 import React, { useEffect, useState } from "react";
-import {TouchableWithoutFeedback, View, StyleSheet, Image} from "react-native";
+import { Image, View } from "react-native";
 
-import NaverMapView, {Circle, Path, Polyline, Polygon} from "react-native-nmap";
-import { Marker } from "react-native-nmap";
-import { FloatingButton } from "../components/FloatingButton";
-import Icon from "react-native-vector-icons/Feather";
+import NaverMapView from "react-native-nmap";
+import { FloatingButton } from "@components/FloatingButton";
 import Geolocation from '@react-native-community/geolocation';
-import { useInterval } from "../hooks/Hooks";
-import MyLocationPin from "../components/MyLocationPin";
+import { Marker } from "react-native-nmap";
+import { useBottomSheetModalRef, useInterval } from "@hooks/Hooks.js";
+import MyLocationPin from "@components/MyLocationPin";
 import MyLocationButton from "../components/MyLocationButton";
-import marker_icon from "@assets/img/marker_icon.png"
+
+import BottomSheet from "@components/BottomSheet";
+import { useSetRecoilState } from "recoil";
+import { screenState } from "@apis/atoms";
 
 const Main = ({ navigation }) => {
+    const setScreen = useSetRecoilState(screenState)
+
+    // ref
+    const bottomSheetModalRef = useBottomSheetModalRef();
+
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
 
-    const P0 = {latitude: 37.564362, longitude: 126.977011};
-    const P1 = {latitude: 37.565051, longitude: 126.978567};
-    const P2 = {latitude: 37.565383, longitude: 126.976292};
+    const P0 = {latitude: 37.4214938, longitude: -122.083922};
 
     useEffect(() => {
         setGeoLocation();
@@ -47,7 +52,7 @@ const Main = ({ navigation }) => {
 
     return (
         <View>
-
+            <BottomSheet />
             <NaverMapView
                 style={{width: '100%', height: '100%'}}
                 showsMyLocationButton={false}
@@ -55,6 +60,7 @@ const Main = ({ navigation }) => {
                 setLocationTrackingMode={3}
             >
                 {
+                    // 현 위치를 표시해주는 마커
                     findLocation ? (
                         <Marker
                             coordinate={{latitude: location.latitude, longitude: location.longitude}}
@@ -65,10 +71,21 @@ const Main = ({ navigation }) => {
                         </Marker>
                     ) : null
                 }
-                <Marker coordinate={P0} pinColor="green" onClick={() => console.warn('onClick! p0')} width={30} height={30} image={marker_icon}/>
+                <Marker
+                    coordinate={P0}
+                    width={60}
+                    height={60}
+                    onClick={async () => {
+                        bottomSheetModalRef.current?.present();
+                        setScreen("Pin");
+                    }}
+                >
+                    <Image
+                        source={require('@assets/img/marker_green.png')}
+                        style={{width: 60, height: 60}}
+                    />
+                </Marker>
             </NaverMapView>
-
-
 
             <MyLocationButton findLocation={findLocation} setFindLocation={setFindLocation} />
 
