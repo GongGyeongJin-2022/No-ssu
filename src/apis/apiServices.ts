@@ -39,14 +39,12 @@ export const getUser = ():Promise<AxiosResponse> => {
     )
 }
 
-export const postMarker = (token:Token, body:any):Promise<AxiosResponse> => {
+export const postMarker = (authHeader:any, body:any):Promise<AxiosResponse> => {
     return axios.post(
         `${URL}/api/marker/`,
-        body, {
-            withCredentials: false,
-            headers: {
-                Authorization: `Bearer ${token.accessToken}`
-            }
+        body,
+        {
+            headers: authHeader
         }
     )
 }
