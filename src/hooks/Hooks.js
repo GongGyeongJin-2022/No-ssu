@@ -1,4 +1,3 @@
-import {useEffect, useRef} from "react";
 import {useRecoilState} from "recoil";
 import {bottomSheetModalRefState} from "@apis/atoms";
 import {useEffect, useRef, useState} from "react";
@@ -56,8 +55,9 @@ export const useApi = (api, authHeader=false) => {
                     access_token = (await snapshot.getPromise(tokenState)).accessToken;
                 }
                 const {data} = await api(authHeader ? makeHeaders(access_token) : null, ...args);
-                setLoading(false);
+                console.log("useapi", data);
                 setResolved(data);
+                setLoading(false);
                 return data
             },
         [],
