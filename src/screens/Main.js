@@ -58,6 +58,7 @@ const Main = ({ navigation }) => {
                 showsMyLocationButton={false}
                 center={{latitude: parseFloat(location.latitude), longitude: parseFloat(location.longitude)}}
                 setLocationTrackingMode={3}
+                useTextureView={true}
             >
                 {
                     // 현 위치를 표시해주는 마커
