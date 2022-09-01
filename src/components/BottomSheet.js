@@ -6,6 +6,7 @@ import { useRecoilState } from "recoil";
 import {screenState} from "@apis/atoms";
 
 import Pin from "@screens/Pin";
+import Upload from "@screens/Upload";
 
 const BottomSheet = () => {
     const [screen, setScreen] = useRecoilState(screenState)
@@ -53,9 +54,7 @@ const BottomSheet = () => {
                         </>
                     ) : screen === "Upload" ? (
                         <>
-                            <Text>
-                                Upload
-                            </Text>
+                            <Upload/>
                         </>
                     ) : screen === "Mypage" ? (
                         <>
