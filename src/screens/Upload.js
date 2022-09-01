@@ -1,16 +1,8 @@
-import React, { useCallback } from 'react';
-import { Platform, Pressable, Image, View, Text, TouchableOpacity, StyleSheet, Button, FlatList, TextInput, TouchableHighlight, Label} from 'react-native';
+import React, {useCallback, useState} from 'react';
+import { Platform, Pressable, Image, View, Text, TouchableOpacity, StyleSheet, Button, FlatList, TextInput, TouchableHighlight} from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import {Slider} from 'rn-range-slider'
-const renderThumb = useCallback(() => <Thumb/>, []);
-const renderRail = useCallback(() => <Rail/>, []);
-const renderRailSelected = useCallback(() => <RailSelected/>, []);
-const renderLabel = useCallback(value => <Label text={value}/>, []);
-const renderNotch = useCallback(() => <Notch/>, []);
-const handleValueChange = useCallback((low, high) => {
-    setLow(low);
-    setHigh(high);
-}, []);
+// import RangeSlider from 'rn-range-slider';
+
 
 const ShowPicker = () => {
 
@@ -23,8 +15,23 @@ const ShowPicker = () => {
     })
 }
 
+const RenderText = ({text}) => (
+    <Text>{text}</Text>
+)
+
 
 const Upload = () => {
+    const [low, setLow] = useState(0);
+    const [high, setHigh] = useState(100);
+    const renderThumb = useCallback(() => <RenderText text={"thumb"}/>, []);
+    const renderRail = useCallback(() => <RenderText text={"rail"}/>, []);
+    const renderRailSelected = useCallback(() => <RenderText text={"railselected"}/>, []);
+    const renderLabel = useCallback(value => <RenderText text={"label"}/>, []);
+    const renderNotch = useCallback(() => <RenderText text={"notch"}/>, []);
+    const handleValueChange = useCallback((low, high) => {
+        setLow(low);
+        setHigh(high);
+    }, []);
     return (
         <View>
             <Pressable style={styles.Button} onPress={ShowPicker}>
@@ -37,7 +44,7 @@ const Upload = () => {
                 <Text>&nbsp;</Text>
                 <View style = {{flexDirection:'row', left : 40}}>
 
-                    <TouchableHighlight style={styles.tag_btn} onPress={underlayColor="white"} ><Text style={styles.tag_txt}># 플라스틱</Text></TouchableHighlight>
+                    <TouchableHighlight style={styles.tag_btn} onPress={() => {console.log("pressed")}} ><Text style={styles.tag_txt}># 플라스틱</Text></TouchableHighlight>
                     <TouchableOpacity style={styles.tag_btn}><Text style={styles.tag_txt}># 종이</Text></TouchableOpacity>
                     <TouchableOpacity style={styles.tag_btn}><Text style={styles.tag_txt}># 유리</Text></TouchableOpacity>
                 </View>
@@ -67,19 +74,19 @@ const Upload = () => {
             <View>
                 <Text>&nbsp;</Text>
                 <Text style={styles.title_txt}>       리워드</Text>
-                <Slider
-                    style={styles.slider}
-                    min={0}
-                    max={100}
-                    step={1}
-                    floatingLabel
-                    renderThumb={renderThumb}
-                    renderRail={renderRail}
-                    renderRailSelected={renderRailSelected}
-                    renderLabel={renderLabel}
-                    renderNotch={renderNotch}
-                    onValueChanged={handleValueChange}
-                />
+                {/*<RangeSlider*/}
+                {/*    style={styles.slider}*/}
+                {/*    min={0}*/}
+                {/*    max={100}*/}
+                {/*    step={1}*/}
+                {/*    floatingLabel*/}
+                {/*    renderThumb={renderThumb}*/}
+                {/*    renderRail={renderRail}*/}
+                {/*    renderRailSelected={renderRailSelected}*/}
+                {/*    renderLabel={renderLabel}*/}
+                {/*    renderNotch={renderNotch}*/}
+                {/*    onValueChanged={handleValueChange}*/}
+                {/*/>*/}
             </View>
         </View>
     )
