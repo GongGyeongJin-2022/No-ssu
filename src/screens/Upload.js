@@ -1,154 +1,266 @@
 import React, {useCallback, useState} from 'react';
-import { Platform, Pressable, Image, View, Text, TouchableOpacity, StyleSheet, Button, FlatList, TextInput, TouchableHighlight} from 'react-native';
+import {
+    Platform,
+    Pressable,
+    Image,
+    View,
+    Text,
+    TouchableOpacity,
+    StyleSheet,
+    Button,
+    FlatList,
+    TextInput,
+    TouchableHighlight,
+    Dimensions, ScrollView, SafeAreaView
+} from 'react-native';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-// import RangeSlider from 'rn-range-slider';
-
-
-const ShowPicker = () => {
-
-    //launchImageLibrary : 사용자 앨범 접근
-    launchImageLibrary({}, (res)=>{
-        alert(res.assets[0].uri)
-        const formdata = new FormData()
-        formdata.append('file', res.assets[0].uri);
-        console.log(res);
-    })
-}
-
-const RenderText = ({text}) => (
-    <Text>{text}</Text>
-)
-
+import ImageModal from "react-native-image-modal";
+import * as ImagePicker from "react-native-image-crop-picker";
+import MotionSlider from 'react-native-motion-slider';
+import { vw, vh } from 'react-native-css-vh-vw';
 
 const Upload = () => {
-    const [low, setLow] = useState(0);
-    const [high, setHigh] = useState(100);
-    const renderThumb = useCallback(() => <RenderText text={"thumb"}/>, []);
-    const renderRail = useCallback(() => <RenderText text={"rail"}/>, []);
-    const renderRailSelected = useCallback(() => <RenderText text={"railselected"}/>, []);
-    const renderLabel = useCallback(value => <RenderText text={"label"}/>, []);
-    const renderNotch = useCallback(() => <RenderText text={"notch"}/>, []);
-    const handleValueChange = useCallback((low, high) => {
-        setLow(low);
-        setHigh(high);
-    }, []);
-    return (
-        <View>
-            <Pressable style={styles.Button} onPress={ShowPicker}>
-                <Text style={styles.Button_txt}>이미지 업로드하기</Text>
-            </Pressable>
-            <Text>&nbsp;</Text>
-            <Text>&nbsp;</Text>
-            <View>
-                <Text style={styles.title_txt}>        태그</Text>
-                <Text>&nbsp;</Text>
-                <View style = {{flexDirection:'row', left : 40}}>
+    const [tags, setTags] = useState([
+        {
+            name: '플라스틱',
+            selected: false
+        },
+        {
+            name: '종이',
+            selected: false
+        },
+        {
+            name: '유리',
+            selected: false
+        },
+        {
+            name: '일반쓰레기',
+            selected: false
+        },
+        {
+            name: '캔/알루미늄',
+            selected: false
+        },
+        {
+            name: '음식물쓰레기',
+            selected: false
+        }
+    ]);
+    const [sizes, setSizes] = useState([
+        {
+            name: '소형',
+            selected: false
+        },
+        {
+            name: '중형',
+            selected: false
+        },
+        {
+            name: '대형',
+            selected: false
+        }
+    ]);
+    const [image, setImage] = useState(null);
+    const [comment, setComment] = useState('');
+    const [reward, setReward] = useState(10);
 
-                    <TouchableHighlight style={styles.tag_btn} onPress={() => {console.log("pressed")}} ><Text style={styles.tag_txt}># 플라스틱</Text></TouchableHighlight>
-                    <TouchableOpacity style={styles.tag_btn}><Text style={styles.tag_txt}># 종이</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.tag_btn}><Text style={styles.tag_txt}># 유리</Text></TouchableOpacity>
-                </View>
-                <Text>&nbsp;</Text>
-                <View style={{flexDirection:'row', justifyContent : "space-evenly"}}>
-                    <TouchableOpacity style={styles.tag_btn}><Text style={styles.tag_txt}># 일반쓰레기</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.tag_btn}><Text style={styles.tag_txt}># 캔/알루미늄</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.tag_btn}><Text style={styles.tag_txt}># 음식물 쓰레기</Text></TouchableOpacity>
-                </View>
+    const handleChange = (idx) => {
+        let items = [...tags];
+        items[idx] = {
+            ...items[idx],
+            selected: !items[idx].selected
+        };
+        setTags(items);
+    }
+
+    const handleSizeChange = (selectedIdx) => {
+        setSizes(prev => {
+            return prev.map((el, idx) => {
+                if(selectedIdx === idx) {
+                    return {
+                        name: el.name,
+                        selected: true
+                    }
+                } else {
+                    return {
+                        name: el.name,
+                        selected: false
+                    }
+                }
+            })
+        })
+    }
+
+    const imagePicker = () => {
+        ImagePicker.openCamera({
+            width: 300,
+            height: 400,
+            cropping: true,
+            includeExif: true,
+            mediaType: 'photo',
+        }).then(image => {
+            console.log(image.path);
+            setImage(image);
+        });
+    }
+
+    return (
+        <View style={styles.fullContainer}>
+        <View style={styles.container}>
+            {
+                image ? (
+                    <ImageModal style={styles.image} resizeMode={"contain"} source={{uri: image.path}}/>
+                ) : (
+
+                    <TouchableOpacity onPress={imagePicker}>
+                        <View style={styles.imagePickerButton}>
+                            <Text style={styles.imagePickerText}>
+                                이미지
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                )
+            }
+            <Text style={styles.label}>태그</Text>
+            <View style={styles.tag}>
+                {
+                    tags.map((tag, idx) => (
+                        <TouchableOpacity
+                            onPress={() => {handleChange(idx)}}
+                            key={idx}
+                        >
+                            <View style={{...styles.tagItem, backgroundColor: tags[idx].selected ? 'black' : 'white'}}>
+                                <Text style={{...styles.tagItemText, color: tags[idx].selected ? 'white' : 'black'}}>{"# " + tag.name}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    ))
+                }
             </View>
-            <Text>&nbsp;</Text>
-            <View>
-                <Text style={styles.title_txt}>       사이즈</Text>
-                <Text>&nbsp;</Text>
-                <View  style={{flexDirection : 'row', justifyContent : "space-evenly"}}>
-                    <TouchableOpacity style={styles.tag_btn}><Text style={styles.tag_txt}># 소형</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.tag_btn}><Text style={styles.tag_txt}># 중형</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.tag_btn}><Text style={styles.tag_txt}># 대형</Text></TouchableOpacity></View>
+            <Text style={styles.label}>사이즈</Text>
+            <View style={styles.tag}>
+                {
+                    sizes.map((tag, idx) => (
+                        <TouchableOpacity
+                            onPress={() => {handleSizeChange(idx)}}
+                            key={idx}
+                        >
+                            <View style={{...styles.tagItem, backgroundColor: sizes[idx].selected ? 'black' : 'white'}}>
+                                <Text style={{...styles.tagItemText, color: sizes[idx].selected ? 'white' : 'black'}}>{"# " + tag.name}</Text>
+                            </View>
+                        </TouchableOpacity>
+                    ))
+                }
             </View>
-            <View>
-                <Text>&nbsp;</Text>
-                <Text style={styles.title_txt}>       코멘트</Text>
-                <TextInput
-                    style={styles.textInput}
-                    placeholder="쓰레기에 대한 설명을 입력해 주세요." />
+            <Text style={styles.label}>코멘트</Text>
+            <View style={styles.commentContainer}>
+                <TextInput style={styles.comment} onChangeText={setComment} value={comment}/>
             </View>
-            <View>
-                <Text>&nbsp;</Text>
-                <Text style={styles.title_txt}>       리워드</Text>
-                {/*<RangeSlider*/}
-                {/*    style={styles.slider}*/}
-                {/*    min={0}*/}
-                {/*    max={100}*/}
-                {/*    step={1}*/}
-                {/*    floatingLabel*/}
-                {/*    renderThumb={renderThumb}*/}
-                {/*    renderRail={renderRail}*/}
-                {/*    renderRailSelected={renderRailSelected}*/}
-                {/*    renderLabel={renderLabel}*/}
-                {/*    renderNotch={renderNotch}*/}
-                {/*    onValueChanged={handleValueChange}*/}
-                {/*/>*/}
+            <Text style={styles.label}>리워드</Text>
+            <View style={styles.rewardContainer}>
+                <MotionSlider
+                    min={1}
+                    max={100}
+                    value={3}
+                    decimalPlaces={0}
+                    units={'P'}
+                    backgroundColor={['rgb(117, 176, 116)', 'rgb(157, 216, 156)']}
+                    onValueChanged={(value) => setReward(value)}
+                />
             </View>
         </View>
+        <TouchableOpacity style={styles.submitButton}>
+            <Text style={styles.submitButtonText}>치워주세요!</Text>
+        </TouchableOpacity>
+    </View>
     )
 };
 
 const styles = StyleSheet.create({
-    Button : {
-        top : 15,
-        alignSelf : 'center',
-        width : 340,
-        height : 300,
-        backgroundColor : '#BDBDBD',
-        borderRadius : 10,
-        shadowColor : '#000000',
-        shadowOpacity : 0.3,
+    fullContainer: {
+        height: "100%",
+        flexDirection: 'column',
+        justifyContent: 'space-between'
+    },
+    container: {
+        padding: 12,
+    },
+    imagePickerButton: {
+        width: "90%",
+        height: vh(30),
+        backgroundColor: 'lightgray',
+        justifyContent: 'center',
+        alignSelf: "center",
+        borderRadius: 10
+    },
+    imagePickerText: {
+        alignSelf: 'center'
+    },
+    image: {
+        alignSelf: 'center',
+        width: "90%",
+        height: vh(40)
+    },
+    tag: {
+        alignSelf: "stretch",
+        display: "flex",
+        flexWrap: "wrap",
+        flexDirection: "row",
+        justifyContent: "flex-start",
+        paddingHorizontal: 20,
+    },
+    tagItem: {
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        width: 76,
+        height: 24,
+        borderWidth: 1,
+        borderColor: "lightgray",
+        borderRadius: 50,
+        marginBottom: 4,
+        marginHorizontal: 3
+    },
+    tagItemText: {
+        fontSize: 10
+    },
+    label: {
+        fontSize: 20,
+        color: 'black',
+        alignSelf: "flex-start",
+        marginLeft: 20,
+        marginTop: 20,
+        marginBottom: 10
+    },
+    commentContainer: {
 
     },
-    background : {
-        backgroundColor : "#BDBDBD",
-        flex : 1,
-        justifyContent : "center",
-        alignItems : "center"
+    comment: {
+        width: "90%",
+        height: 40,
+        alignSelf: "center",
+        borderWidth: 1,
+        padding: 10,
+        borderColor: "lightgray",
+        borderRadius: 10
     },
-    Button_txt : {
-        alignSelf : 'center',
-        fontSize : 15,
-        color : '#000000',
-        fontWeight : 'Bold',
-        top : 150
+    rewardContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
     },
-    title_txt : {
-        alignSelf : 'flex-start',
-        fontSize : 17,
-        fontWeight : 'Bold',
-        color : '#000000',
-        top : 3
-    },
-    tag_btn : {
-        borderColor : '#BDBDBD',
-        borderRadius : 15,
-        width : 80,
-        height : 25,
-        backgroundColor : '#FFFFFF',
-        borderWidth : 0.5,
-        top : 5
-    },
+    rewardSlider: {
 
-    tag_txt : {
-        top : 3,
-        alignSelf : 'center',
-        fontSize : 10,
-        color : '#000000'
     },
-
-    textInput : {
-        top : 10,
-        width : 320,
-        height : 50,
-        alignSelf : 'center',
-        borderColor : '#BDBDBD',
-        borderWidth : 1,
-        borderRadius : 10
+    submitButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: vh(7),
+        backgroundColor: '#6EBFB0',
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+    },
+    submitButtonText: {
+        color: 'white',
+        fontWeight: 'bold'
     }
 })
 
