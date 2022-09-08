@@ -6,6 +6,7 @@ import { useRecoilState } from "recoil";
 import {screenState} from "@apis/atoms";
 
 import Pin from "@screens/Pin";
+import MyPage from "@screens/MyPage";
 
 const BottomSheet = () => {
     const [screen, setScreen] = useRecoilState(screenState)
@@ -58,11 +59,7 @@ const BottomSheet = () => {
                             </Text>
                         </>
                     ) : screen === "Mypage" ? (
-                        <>
-                            <Text>
-                                Mypage
-                            </Text>
-                        </>
+                        <MyPage />
                     ) : screen === "Pin" ? (
                         <Pin />
                     ) : null

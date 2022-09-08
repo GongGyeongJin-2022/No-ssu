@@ -31,7 +31,7 @@ const RootNavigator = () => {
         <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{ headerShown: false }}
-                initialRouteName={token ? "Main" : "Login"}
+                initialRouteName={token?.accessToken ? "Main" : "Login"}
             >
                 <Stack.Screen name="Main" component={Main} />
                 <Stack.Screen name="Login" component={Login} />
