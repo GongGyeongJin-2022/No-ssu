@@ -18,6 +18,9 @@ import ImageModal from "react-native-image-modal";
 import * as ImagePicker from "react-native-image-crop-picker";
 import MotionSlider from 'react-native-motion-slider';
 import { vw, vh } from 'react-native-css-vh-vw';
+import Toast from "react-native-toast-message";
+import {useApi} from "@hooks/Hooks";
+import {postMarker} from "@apis/apiServices";
 
 const Upload = () => {
     const [tags, setTags] = useState([
@@ -63,6 +66,7 @@ const Upload = () => {
     const [image, setImage] = useState(null);
     const [comment, setComment] = useState('');
     const [reward, setReward] = useState(10);
+    const [markerLoading, markerResolved, callApi] = useApi(postMarker, true);
 
     const handleChange = (idx) => {
         let items = [...tags];
@@ -102,6 +106,70 @@ const Upload = () => {
             console.log(image.path);
             setImage(image);
         });
+    }
+
+    const uploadMarker = () => {
+        console.log("upload");
+
+        if(!image) {
+            Toast.show({
+                type: 'error',
+                text1: '등록 실패',
+                text2: '이미지를 촬영해주세요',
+            });
+            return;
+        }
+
+        let tagFlag = true, sizeFlag = true;
+        let formData = new FormData();
+        formData.append("longitude", 100);
+        formData.append("latitude", 100);
+        formData.append("image", {
+            uri: image.path,
+            type: image.mime,
+            name: 'addressimage.jpg'
+        });
+        formData.append("explanation", comment);
+        formData.append("reward", reward); // TODO: reward를 사용자의 point를 초과하여 업로드할수 없게 안전장치 필요
+        tags.forEach((tag, idx) => {
+            if(tag.selected) {
+                formData.append("tag", idx+1);
+                tagFlag = false;
+            }
+        })
+
+        sizes.forEach((size, idx) => {
+            if(size.selected) {
+                formData.append("size", idx+1);
+                sizeFlag = false;
+            }
+        })
+
+        if(tagFlag) {
+            Toast.show({
+                type: 'error',
+                text1: '등록 실패',
+                text2: '태그를 하나 이상 선택해주세요',
+            });
+            return;
+        } else if(sizeFlag) {
+            Toast.show({
+                type: 'error',
+                text1: '등록 실패',
+                text2: '사이즈를 하나 선택해주세요',
+            });
+            return;
+        }
+
+        callApi(formData)
+            .then(() => {
+                Toast.show({
+                    type: 'success',
+                    text1: '업로드 성공'
+                });
+
+            })
+            .catch(err => {console.log(err)});
     }
 
     return (
@@ -168,7 +236,7 @@ const Upload = () => {
                 />
             </View>
         </View>
-        <TouchableOpacity style={styles.submitButton}>
+        <TouchableOpacity style={styles.submitButton} onPress={uploadMarker}>
             <Text style={styles.submitButtonText}>치워주세요!</Text>
         </TouchableOpacity>
     </View>
@@ -197,8 +265,8 @@ const styles = StyleSheet.create({
     },
     image: {
         alignSelf: 'center',
-        width: "90%",
-        height: vh(40)
+        width: vw(100),
+        height: vh(30)
     },
     tag: {
         alignSelf: "stretch",
@@ -253,7 +321,7 @@ const styles = StyleSheet.create({
     submitButton: {
         justifyContent: 'center',
         alignItems: 'center',
-        height: vh(7),
+        height: vh(6),
         backgroundColor: '#6EBFB0',
         borderTopLeftRadius: 5,
         borderTopRightRadius: 5,

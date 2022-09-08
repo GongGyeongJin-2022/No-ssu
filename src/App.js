@@ -17,6 +17,7 @@ import LottieView from 'lottie-react-native';
 
 import Main from '@screens/Main';
 import Login from '@screens/Login';
+import Toast from "react-native-toast-message";
 
 const Stack = createNativeStackNavigator();
 
@@ -62,6 +63,7 @@ const App = () => {
                                     /> : <RootNavigator />
                             }
                         </BottomSheetModalProvider>
+                        <Toast/>
                     </GestureHandlerRootView>
                 </React.Suspense>
             </ReactNativeRecoilPersistGate>
