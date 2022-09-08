@@ -39,14 +39,49 @@ export const getUser = ():Promise<AxiosResponse> => {
     )
 }
 
-export const postMarker = (authHeader:any, body:any):Promise<AxiosResponse> => {
+export const postMarker = (authHeader:any, body:any):any => {
+    //
+    let formData = new FormData();
+    formData.append("reward", {
+        "reward": 1000,
+        "gave_user": 1
+    });
+    formData.append("longitude",100);
+    formData.append("latitude", 100);
+    formData.append("explanation", "this is test2");
+    formData.append("size", "L");
+    formData.append("status", "W");
+    formData.append("posted_user", 1);
+    formData.append("tags", 1);
+    console.log("postMarker", body);
+    // const formData = JSON.stringify({"reward":{"reward":100,"gave_user":1},"longitude":100,"latitude":100,"explanation":"this is test","size":"L","status":"W","posted_user":1,"tags":[1]});
     return axios.post(
         `${URL}/api/marker/`,
-        body,
-        {
-            headers: authHeader
+        formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                ...authHeader
+            }
         }
-    )
+    ).catch(function (error) {
+        if (error.response) {
+            // 요청이 이루어졌으며 서버가 2xx의 범위를 벗어나는 상태 코드로 응답했습니다.
+            console.log('1', error.response.data);
+            console.log('1', error.response.status);
+            console.log('1', error.response.headers);
+        }
+        else if (error.request) {
+            // 요청이 이루어 졌으나 응답을 받지 못했습니다.
+            // `error.request`는 브라우저의 XMLHttpRequest 인스턴스 또는
+            // Node.js의 http.ClientRequest 인스턴스입니다.
+            console.log('2', error.request);
+        }
+        else {
+            // 오류를 발생시킨 요청을 설정하는 중에 문제가 발생했습니다.
+            console.log('Error 3', error.message);
+        }
+        console.log('4',error.config);
+    });
 }
 
 export const getMarkersSimiple = (authHeader:any):Promise<AxiosResponse> => {

@@ -52,14 +52,17 @@ const Upload = () => {
     const [sizes, setSizes] = useState([
         {
             name: '소형',
+            code: "S",
             selected: false
         },
         {
             name: '중형',
+            code: "M",
             selected: false
         },
         {
             name: '대형',
+            code: "L",
             selected: false
         }
     ]);
@@ -68,32 +71,32 @@ const Upload = () => {
     const [reward, setReward] = useState(10);
     const [markerLoading, markerResolved, callApi] = useApi(postMarker, true);
 
-    const handleChange = (idx) => {
-        let items = [...tags];
+    const handleChange = (prev, setter, idx) => {
+        let items = [...prev];
         items[idx] = {
             ...items[idx],
             selected: !items[idx].selected
         };
-        setTags(items);
+        setter(items);
     }
 
-    const handleSizeChange = (selectedIdx) => {
-        setSizes(prev => {
-            return prev.map((el, idx) => {
-                if(selectedIdx === idx) {
-                    return {
-                        name: el.name,
-                        selected: true
-                    }
-                } else {
-                    return {
-                        name: el.name,
-                        selected: false
-                    }
-                }
-            })
-        })
-    }
+    // const handleSizeChange = (selectedIdx) => {
+    //     setSizes(prev => {
+    //         return prev.map((el, idx) => {
+    //             if(selectedIdx === idx) {
+    //                 return {
+    //                     name: el.name,
+    //                     selected: true
+    //                 }
+    //             } else {
+    //                 return {
+    //                     name: el.name,
+    //                     selected: false
+    //                 }
+    //             }
+    //         })
+    //     })
+    // }
 
     const imagePicker = () => {
         ImagePicker.openCamera({
@@ -124,23 +127,32 @@ const Upload = () => {
         let formData = new FormData();
         formData.append("longitude", 100);
         formData.append("latitude", 100);
+        formData.append("status", "W")
         formData.append("image", {
             uri: image.path,
             type: image.mime,
             name: 'addressimage.jpg'
         });
         formData.append("explanation", comment);
-        formData.append("reward", reward); // TODO: reward를 사용자의 point를 초과하여 업로드할수 없게 안전장치 필요
+        formData.append("reward", {
+            reward: 100,
+            gave_user: 1
+        }); // TODO: reward를 사용자의 point를 초과하여 업로드할수 없게 안전장치 필요
         tags.forEach((tag, idx) => {
             if(tag.selected) {
-                formData.append("tag", idx+1);
+                formData.append("tags", idx+1);
                 tagFlag = false;
             }
         })
 
+        // formData.append("tag",1);
+        formData.append("posted_user",1)
+
+        console.log(sizes)
+
         sizes.forEach((size, idx) => {
             if(size.selected) {
-                formData.append("size", idx+1);
+                formData.append("size", size.code);
                 sizeFlag = false;
             }
         })
@@ -161,7 +173,27 @@ const Upload = () => {
             return;
         }
 
-        callApi(formData)
+        const body = {
+            // "image" : {
+            //     uri: image.path,
+            //     type: image.mime,
+            //     name: 'addressimage.jpg'
+            // },
+            "reward":{
+                "reward":100,
+                "gave_user":1
+            },
+            "longitude":100,
+            "latitude":100,
+            "explanation":"this is test",
+            "size":"L",
+            "status":"W",
+            "posted_user":1,
+            "tags":[1]
+        }
+
+        callApi(JSON.stringify(body))
+            .then(res=>{console.log("error",res)})
             .then(() => {
                 Toast.show({
                     type: 'success',
@@ -169,6 +201,7 @@ const Upload = () => {
                 });
 
             })
+
             .catch(err => {console.log(err)});
     }
 
@@ -194,7 +227,7 @@ const Upload = () => {
                 {
                     tags.map((tag, idx) => (
                         <TouchableOpacity
-                            onPress={() => {handleChange(idx)}}
+                            onPress={() => {handleChange(tags, setTags, idx)}}
                             key={idx}
                         >
                             <View style={{...styles.tagItem, backgroundColor: tags[idx].selected ? 'black' : 'white'}}>
@@ -209,7 +242,7 @@ const Upload = () => {
                 {
                     sizes.map((tag, idx) => (
                         <TouchableOpacity
-                            onPress={() => {handleSizeChange(idx)}}
+                            onPress={() => {handleChange(sizes, setSizes, idx)}}
                             key={idx}
                         >
                             <View style={{...styles.tagItem, backgroundColor: sizes[idx].selected ? 'black' : 'white'}}>
