@@ -110,6 +110,11 @@ const Upload = () => {
             setImage(image);
         });
     }
+    const jsonBlob = (obj) => {
+        return new Blob([JSON.stringify(obj)], {
+            type: "application/json",
+        });
+    }
 
     const uploadMarker = () => {
         console.log("upload");
@@ -125,19 +130,22 @@ const Upload = () => {
 
         let tagFlag = true, sizeFlag = true;
         let formData = new FormData();
-        formData.append("longitude", 100);
-        formData.append("latitude", 100);
-        formData.append("status", "W")
         formData.append("image", {
             uri: image.path,
             type: image.mime,
             name: 'addressimage.jpg'
         });
-        formData.append("explanation", comment);
-        formData.append("reward", {
+        const rewardObj = {
             reward: 100,
             gave_user: 1
-        }); // TODO: reward를 사용자의 point를 초과하여 업로드할수 없게 안전장치 필요
+        }
+        formData.append("reward",  new Blob([JSON.stringify(rewardObj)], { type: "application/json" })); // TODO: reward를 사용자의 point를 초과하여 업로드할수 없게 안전장치 필요
+        formData.append("longitude", 100.0);
+        formData.append("latitude", 100.0);
+        formData.append("status", "W")
+
+        formData.append("explanation", comment);
+
         tags.forEach((tag, idx) => {
             if(tag.selected) {
                 formData.append("tags", idx+1);
@@ -173,26 +181,7 @@ const Upload = () => {
             return;
         }
 
-        const body = {
-            // "image" : {
-            //     uri: image.path,
-            //     type: image.mime,
-            //     name: 'addressimage.jpg'
-            // },
-            "reward":{
-                "reward":100,
-                "gave_user":1
-            },
-            "longitude":100,
-            "latitude":100,
-            "explanation":"this is test",
-            "size":"L",
-            "status":"W",
-            "posted_user":1,
-            "tags":[1]
-        }
-
-        callApi(JSON.stringify(body))
+        callApi(formData)
             .then(res=>{console.log("error",res)})
             .then(() => {
                 Toast.show({

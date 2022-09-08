@@ -40,24 +40,9 @@ export const getUser = ():Promise<AxiosResponse> => {
 }
 
 export const postMarker = (authHeader:any, body:any):any => {
-    //
-    let formData = new FormData();
-    formData.append("reward", {
-        "reward": 1000,
-        "gave_user": 1
-    });
-    formData.append("longitude",100);
-    formData.append("latitude", 100);
-    formData.append("explanation", "this is test2");
-    formData.append("size", "L");
-    formData.append("status", "W");
-    formData.append("posted_user", 1);
-    formData.append("tags", 1);
-    console.log("postMarker", body);
-    // const formData = JSON.stringify({"reward":{"reward":100,"gave_user":1},"longitude":100,"latitude":100,"explanation":"this is test","size":"L","status":"W","posted_user":1,"tags":[1]});
     return axios.post(
         `${URL}/api/marker/`,
-        formData, {
+        body, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 ...authHeader
@@ -80,13 +65,13 @@ export const postMarker = (authHeader:any, body:any):any => {
             // 오류를 발생시킨 요청을 설정하는 중에 문제가 발생했습니다.
             console.log('Error 3', error.message);
         }
-        console.log('4',error.config);
+        console.log('4',JSON.stringify(error.config));
     });
 }
 
 export const getMarkersSimiple = (authHeader:any):Promise<AxiosResponse> => {
     return axios.get (
-        `${URL}/api/marker/`, // TODO: 현재는 simple url이 아님. 추후에 simple로 바꾸어야함.
+        `${URL}/api/simple/`, // TODO: 현재는 simple url이 아님. 추후에 simple로 바꾸어야함.
         {
             headers: authHeader
         }
