@@ -39,14 +39,21 @@ export const getUser = ():Promise<AxiosResponse> => {
     )
 }
 
-export const postMarker = (token:Token, body:any):Promise<AxiosResponse> => {
+export const postMarker = (authHeader:any, body:any):Promise<AxiosResponse> => {
     return axios.post(
         `${URL}/api/marker/`,
-        body, {
-            withCredentials: false,
-            headers: {
-                Authorization: `Bearer ${token.accessToken}`
-            }
+        body,
+        {
+            headers: authHeader
+        }
+    )
+}
+
+export const getMarkersSimiple = (authHeader:any):Promise<AxiosResponse> => {
+    return axios.get (
+        `${URL}/api/marker/`, // TODO: 현재는 simple url이 아님. 추후에 simple로 바꾸어야함.
+        {
+            headers: authHeader
         }
     )
 }
