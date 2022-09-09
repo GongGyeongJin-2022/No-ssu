@@ -24,16 +24,6 @@ const Stack = createNativeStackNavigator();
 const RootNavigator = () => {
     const [token, setToken] = useRecoilState(tokenState);
 
-    useEffect(() => {
-        console.log("rootNavigator", token);
-        setToken(
-            {
-                accessToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY2MzMxNzU1NiwiaWF0IjoxNjYyNzEyNzU2LCJqdGkiOiI2M2RmMDI1ODE2Zjc0ZWVlOWEyY2I3NzhhMDZiNTAzZSIsInVzZXJfaWQiOjR9.ZomeOPPbPfRUqZdZZS-Pq_BI2gTFhqPQYllvtktzPiY",
-                refreshToken: token.refreshToken
-            }
-        )
-    },[])
-
     return (
         <NavigationContainer>
             <Stack.Navigator
