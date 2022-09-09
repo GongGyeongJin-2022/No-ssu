@@ -57,7 +57,7 @@ export const useApi = (api, authHeader=false) => {
             return postTokenRefresh({"refresh": refreshToken})
                 .then(() => {
                     console.log("tokenRefresh finished")
-                    return callback(...args)
+                    return {data:callback(...args)}
                 })
         }
     }
@@ -70,6 +70,7 @@ export const useApi = (api, authHeader=false) => {
                     const token = await snapshot.getPromise(tokenState)
                     accessToken = token.accessToken;
                     refreshToken = token.refreshToken;
+                    console.log("accessToken token", accessToken);
                 }
                 const {data} = authHeader ? (
                     await api(makeHeaders(accessToken), ...args)
@@ -80,6 +81,7 @@ export const useApi = (api, authHeader=false) => {
                 );
                 setResolved(data);
                 setLoading(false);
+                console.log("final data",data);
                 return data
             },
         [],
