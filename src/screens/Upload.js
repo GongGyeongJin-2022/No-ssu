@@ -23,6 +23,7 @@ import {useApi} from "@hooks/Hooks";
 import {postMarker} from "@apis/apiServices";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {screenState, tokenState, Screen} from "@apis/atoms";
+import Geolocation from "@react-native-community/geolocation";
 
 const Upload = () => {
     const [tags, setTags] = useState([
@@ -72,8 +73,25 @@ const Upload = () => {
     const [comment, setComment] = useState('');
     const [reward, setReward] = useState(10);
     const [markerLoading, markerResolved, callApi] = useApi(postMarker, true);
+    const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
 
     const setScreen = useSetRecoilState(screenState);
+
+    const setGeoLocation = () => {
+        Geolocation.getCurrentPosition(
+            (position) => {
+                console.log(position);
+                setLocation({
+                    latitude: position.coords.latitude,
+                    longitude: position.coords.longitude,
+                });
+            },
+            (error) => {
+                console.log("geolocationerror",error);
+            },
+            { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
+        );
+    }
 
     const handleChange = (prev, setter, idx) => {
         let items = [...prev];
@@ -112,6 +130,7 @@ const Upload = () => {
         }).then(image => {
             console.log(image.path);
             setImage(image);
+            setGeoLocation();
         });
     }
     const jsonBlob = (obj) => {
@@ -140,8 +159,8 @@ const Upload = () => {
             name: 'addressimage.jpg'
         });
         formData.append("reward_reward", reward); // TODO: reward를 사용자의 point를 초과하여 업로드할수 없게 안전장치 필요
-        formData.append("longitude", 100.0);
-        formData.append("latitude", 100.0);
+        formData.append("longitude", location.longitude);
+        formData.append("latitude", location.latitude);
         formData.append("status", "W")
 
         formData.append("explanation", comment);
@@ -182,7 +201,7 @@ const Upload = () => {
         }
 
         callApi(formData)
-            .then(res=>{console.log("error",res)})
+            .then(res=>{console.log("res",res)})
             .then(() => {
                 Toast.show({
                     type: 'success',

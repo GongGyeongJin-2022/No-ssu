@@ -54,7 +54,7 @@ const BottomSheet = () => {
                         </>
                     ) : screen === Screen.Upload ? (
                         <>
-                            <Upload/>
+                            <Upload />
                         </>
                     ) : screen === Screen.Mypage ? (
                         <>

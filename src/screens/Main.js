@@ -24,9 +24,6 @@ const Main = ({ navigation }) => {
     const [findLocation, setFindLocation] = useState(false);
     const [markersLoading, markers, getMarkersSimpleCallback] = useApi(getMarkersSimiple, true);
 
-
-    const P0 = {latitude: 37.4214938, longitude: -122.083922};
-
     useEffect(() => {
         setGeoLocation();
         getMarkersSimpleCallback();
@@ -63,7 +60,7 @@ const Main = ({ navigation }) => {
 
     return (
         <View>
-            <BottomSheet />
+            <BottomSheet/>
             <NaverMapView
                 style={{width: '100%', height: '100%'}}
                 showsMyLocationButton={false}
