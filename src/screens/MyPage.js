@@ -1,12 +1,48 @@
 import React from "react";
-import { Text, View, StyleSheet, Image } from "react-native";
+import { Text, View, StyleSheet, Image, TouchableHighlight } from "react-native";
 import { vh, vw } from "react-native-css-vh-vw";
 import NaverMapView, { Marker } from "react-native-nmap";
 import MyLocationPin from "@components/MyLocationPin";
+import { ScrollView } from "react-native-gesture-handler";
+
+const LogItem = () => {
+    return (
+        <View style={styles.logItemContainer}>
+            <View style={styles.logItem}>
+                <View style={styles.logItemMap}>
+                    <NaverMapView
+                        style={{width: '100%', height: '100%'}}
+                        showsMyLocationButton={false}
+                        scaleBar={false}
+                        zoomControl={false}
+                        setLocationTrackingMode={3}
+                        // remove naver logo
+                        logoMargin={{top: vh(200), left: 0, bottom: 0, right: 0}}
+                    >
+                    </NaverMapView>
+                </View>
+                <View style={styles.logItemInfo}>
+                    <Text style={{fontSize: 17, fontWeight: '400'}}>2022.07.25 12시 13분</Text>
+                    <View style={styles.logItemPostedUser}>
+                        <Text style={{marginRight: 10}}>의뢰인</Text>
+                        <Text>상상부기</Text>
+                    </View>
+                    <View style={styles.logItemCleanUser}>
+                        <Text style={{marginRight: 10}}>처리인</Text>
+                        <Text>김한성</Text>
+                    </View>
+                </View>
+                <View style={styles.pointContainer}>
+                    <Text style={{fontSize: 12, color: '#93CE92'}}>+ 1000</Text>
+                </View>
+            </View>
+        </View>
+    );
+}
 
 const MyPage = () => {
     return (
-        <View style={styles.container}>
+        <ScrollView style={styles.container}  contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}>
             <View style={styles.infoContainer}>
                 <View style={styles.profileImage}></View>
                 <View style={styles.info}>
@@ -23,7 +59,7 @@ const MyPage = () => {
             <View style={styles.activityContainer}>
                 <View style={styles.activityDivider}>
                     <Text style={styles.activityText}>활동</Text>
-                    <View style={{borderTopWidth: 0.75, width: '83%'}}></View>
+                    <View style={{borderTopWidth: 0.75, width: vw(68)}}></View>
                 </View>
                 <View style={styles.activityMap}>
                     <NaverMapView
@@ -32,6 +68,7 @@ const MyPage = () => {
                         scaleBar={false}
                         zoomControl={false}
                         setLocationTrackingMode={3}
+                        logoMargin={{top: vh(200), left: 0, bottom: 0, right: 0}}
                     >
                     </NaverMapView>
                 </View>
@@ -40,34 +77,38 @@ const MyPage = () => {
             <View style={styles.logContainer}>
                 <View style={styles.logDivider}>
                     <Text style={styles.logText}>로그</Text>
-                    <View style={{borderTopWidth: 0.75, width: '83%'}}></View>
+                    <View style={{borderTopWidth: 0.75, width: vw(68)}}></View>
                 </View>
-                <View style={styles.logItemContainer}>
-                    <View style={styles.logItem}>
-                        <View>
 
-                        </View>
-                    </View>
+                <LogItem />
+                <LogItem />
+                <LogItem />
+
+                <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: vh(1)}}>
+                    <View style={{borderTopWidth: 0.75, width: vw(25)}} />
+                    <Text>show more</Text>
+                    <View style={{borderTopWidth: 0.75, width: vw(25)}} />
                 </View>
             </View>
-        </View>
+
+            <TouchableHighlight style={styles.logoutButton}>
+                <Text style={{color: 'white', fontWeight: 'bold', textAlign: 'center'}}> 로그아웃 </Text>
+            </TouchableHighlight>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
         width: '100%',
     },
     infoContainer: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
         marginTop: vw(10),
+        width: '80%',
     },
     profileImage: {
         width: 100,
@@ -79,7 +120,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        marginLeft: 20,
     },
     point: {
         display: 'flex',
@@ -107,7 +147,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
     },
     activityContainer: {
-        marginTop: 40,
+        marginTop: vh(5),
         width: '80%',
     },
     activityText: {
@@ -123,12 +163,12 @@ const styles = StyleSheet.create({
     activityMap: {
         width: '100%',
         height: vh(25),
-        marginTop: 20,
+        marginTop: vh(2),
         borderRadius: vh(1),
         overflow: 'hidden'
     },
     logContainer: {
-        marginTop: 40,
+        marginTop: vh(2),
         width: '80%',
     },
     logText: {
@@ -142,17 +182,62 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     logItemContainer: {
-        marginTop: 20,
+        marginTop: vh(1),
     },
     logItem: {
         width: '100%',
         height: 100,
-        borderWidth: 1,
-        borderRadius: 10,
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+    logItemMap: {
+        width: vw(20),
+        height: vw(20),
+        borderRadius: vh(1),
+        overflow: 'hidden'
+    },
+    logItemInfo: {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+    },
+    logItemPostedUser: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
+        marginTop: 5,
+    },
+    logItemCleanUser: {
+        display: 'flex',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: 1,
+    },
+    pointContainer: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 50,
+        height: 50,
+        borderRadius: 100,
+        borderWidth: 0.5,
+        borderColor: '#93CE92',
+    },
+    logoutButton: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#B30000',
+        borderTopLeftRadius: 10,
+        borderTopRightRadius: 10,
+        padding: 5,
+        width: vw(100),
+        height: 40,
+        marginTop: vh(5),
     },
 });
 

@@ -12,6 +12,7 @@ import MyLocationButton from "../components/MyLocationButton";
 import BottomSheet from "@components/BottomSheet";
 import { useSetRecoilState } from "recoil";
 import { screenState } from "@apis/atoms";
+import { vh } from "react-native-css-vh-vw";
 
 const Main = ({ navigation }) => {
     const setScreen = useSetRecoilState(screenState)
@@ -58,6 +59,8 @@ const Main = ({ navigation }) => {
                 showsMyLocationButton={false}
                 center={{latitude: parseFloat(location.latitude), longitude: parseFloat(location.longitude)}}
                 setLocationTrackingMode={3}
+                logoMargin={{top: vh(200), left: 0, bottom: 0, right: 0}}
+                scaleBar={false}
             >
                 {
                     // 현 위치를 표시해주는 마커
