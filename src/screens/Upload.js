@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
     Platform,
     Pressable,
@@ -21,6 +21,8 @@ import { vw, vh } from 'react-native-css-vh-vw';
 import Toast from "react-native-toast-message";
 import {useApi} from "@hooks/Hooks";
 import {postMarker} from "@apis/apiServices";
+import {useRecoilValue, useSetRecoilState} from "recoil";
+import {screenState, tokenState, Screen} from "@apis/atoms";
 
 const Upload = () => {
     const [tags, setTags] = useState([
@@ -70,6 +72,8 @@ const Upload = () => {
     const [comment, setComment] = useState('');
     const [reward, setReward] = useState(10);
     const [markerLoading, markerResolved, callApi] = useApi(postMarker, true);
+
+    const setScreen = useSetRecoilState(screenState);
 
     const handleChange = (prev, setter, idx) => {
         let items = [...prev];
@@ -135,11 +139,7 @@ const Upload = () => {
             type: image.mime,
             name: 'addressimage.jpg'
         });
-        const rewardObj = {
-            reward: 100,
-            gave_user: 1
-        }
-        formData.append("reward",  new Blob([JSON.stringify(rewardObj)], { type: "application/json" })); // TODO: reward를 사용자의 point를 초과하여 업로드할수 없게 안전장치 필요
+        formData.append("reward_reward", reward); // TODO: reward를 사용자의 point를 초과하여 업로드할수 없게 안전장치 필요
         formData.append("longitude", 100.0);
         formData.append("latitude", 100.0);
         formData.append("status", "W")
@@ -188,10 +188,15 @@ const Upload = () => {
                     type: 'success',
                     text1: '업로드 성공'
                 });
-
+                setScreen(Screen.Main);
             })
-
-            .catch(err => {console.log(err)});
+            .catch(err => {
+                Toast.show({
+                    type: 'error',
+                    text1: '등록 실패',
+                    text2: 'API호출중 에러가 발생했습니다.',
+                });
+            });
     }
 
     return (

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Text } from "react-native";
 
-import {RecoilRoot, useRecoilValue} from "recoil";
+import {RecoilRoot, useRecoilState, useRecoilValue} from "recoil";
 import ReactNativeRecoilPersist, {
     ReactNativeRecoilPersistGate,
 } from "react-native-recoil-persist";
@@ -22,11 +22,17 @@ import Toast from "react-native-toast-message";
 const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
-    const token = useRecoilValue(tokenState);
+    const [token, setToken] = useRecoilState(tokenState);
 
     useEffect(() => {
         console.log("rootNavigator", token);
-    },[token])
+        setToken(
+            {
+                accessToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MTY2MzMxNzU1NiwiaWF0IjoxNjYyNzEyNzU2LCJqdGkiOiI2M2RmMDI1ODE2Zjc0ZWVlOWEyY2I3NzhhMDZiNTAzZSIsInVzZXJfaWQiOjR9.ZomeOPPbPfRUqZdZZS-Pq_BI2gTFhqPQYllvtktzPiY",
+                refreshToken: token.refreshToken
+            }
+        )
+    },[])
 
     return (
         <NavigationContainer>

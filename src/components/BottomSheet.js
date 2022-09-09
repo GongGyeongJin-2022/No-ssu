@@ -3,7 +3,7 @@ import { BottomSheetModal, useBottomSheetModal } from "@gorhom/bottom-sheet";
 import { Text, View } from "react-native";
 import { useBottomSheetModalRef } from "@hooks/Hooks";
 import { useRecoilState } from "recoil";
-import {screenState} from "@apis/atoms";
+import {screenState, Screen} from "@apis/atoms";
 
 import Pin from "@screens/Pin";
 import Upload from "@screens/Upload";
@@ -30,7 +30,7 @@ const BottomSheet = () => {
             bottomSheetModalRef.current.present();
             setSnapPoints(snapPointsList[screen])
 
-            if (screen === '') {
+            if (screen === Screen.None) {
                 dismissAll();
             }
         }
@@ -41,22 +41,22 @@ const BottomSheet = () => {
             ref={bottomSheetModalRef}
             snapPoints={snapPoints}
             onDismiss={() => {
-                setScreen('');
+                setScreen(Screen.None);
             }}
         >
             <View>
                 {
-                    screen === "Main" ? (
+                    screen === Screen.Main ? (
                         <>
                             <Text>
                                 Main
                             </Text>
                         </>
-                    ) : screen === "Upload" ? (
+                    ) : screen === Screen.Upload ? (
                         <>
                             <Upload/>
                         </>
-                    ) : screen === "Mypage" ? (
+                    ) : screen === Screen.Mypage ? (
                         <>
                             <Text>
                                 Mypage
