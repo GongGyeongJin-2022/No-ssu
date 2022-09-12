@@ -10,8 +10,8 @@ import MyLocationPin from "@components/MyLocationPin";
 import MyLocationButton from "../components/MyLocationButton";
 
 import BottomSheet from "@components/BottomSheet";
-import { useSetRecoilState } from "recoil";
-import { screenState } from "@apis/atoms";
+import {useRecoilState, useSetRecoilState} from "recoil";
+import {screenState, tokenState, Screen} from "@apis/atoms";
 import {getMarkersSimiple} from "@apis/apiServices";
 
 const Main = ({ navigation }) => {
@@ -23,8 +23,6 @@ const Main = ({ navigation }) => {
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
     const [markersLoading, markers, getMarkersSimpleCallback] = useApi(getMarkersSimiple, true);
-
-    const P0 = {latitude: 37.4214938, longitude: -122.083922};
 
     useEffect(() => {
         setGeoLocation();
@@ -62,12 +60,13 @@ const Main = ({ navigation }) => {
 
     return (
         <View>
-            <BottomSheet />
+            <BottomSheet/>
             <NaverMapView
                 style={{width: '100%', height: '100%'}}
                 showsMyLocationButton={false}
                 center={{latitude: parseFloat(location.latitude), longitude: parseFloat(location.longitude)}}
                 setLocationTrackingMode={3}
+                useTextureView={true}
             >
                 {
                     // 현 위치를 표시해주는 마커
@@ -89,7 +88,7 @@ const Main = ({ navigation }) => {
                             coordinate={{latitude: parseFloat(marker.latitude), longitude: parseFloat(marker.longitude)}}
                             onClick={async () => {
                                 bottomSheetModalRef.current?.present();
-                                setScreen("Pin");
+                                setScreen(Screen.Pin);
                             }}
                         />
                     ))

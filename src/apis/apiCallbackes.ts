@@ -1,8 +1,9 @@
 import {useRecoilCallback, useRecoilValue} from "recoil";
-import {postGooleLoginFinish, postMarker} from "@apis/apiServices";
+import {postGooleLoginFinish, postMarker, postTokenRefresh} from "@apis/apiServices";
 import {tokenState} from "@apis/atoms";
 import {GOOGLELOGIN_POST_ERROR, MARKER_POST_ERROR} from "@apis/types";
 import { useNavigation } from "@react-navigation/native";
+import Toast from "react-native-toast-message";
 
 export const usePostGoogleLoginFinishCallback = () => {
     const navigation = useNavigation();
@@ -24,14 +25,25 @@ export const usePostGoogleLoginFinishCallback = () => {
     );
 }
 
-export const usePostMarkerCallback = () => {
-    const token = useRecoilValue(tokenState);
+export const usePostTokenRefreshCallback = () => {
     return useRecoilCallback(({snapshot, set}) =>
-             (body) => {
-                postMarker(token, body)
-                    .then()
-                    .catch((e) => {
-                        console.log(MARKER_POST_ERROR);
+            async (body) => {
+                await postTokenRefresh(body)
+                    .then(({data}) => {
+                        console.log("data", data);
+                        set(tokenState, {
+                            accessToken: data.access,
+                            refreshToken: body.refresh
+                        });
+                    })
+                    .catch(err => {
+                        if(err.response.status === 401) {
+                            Toast.show({
+                                type: 'error',
+                                text1: 'API에러',
+                                text2: err.response.detail,
+                            })
+                        }
                     });
             },
         [],

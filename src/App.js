@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Text } from "react-native";
 
-import {RecoilRoot, useRecoilValue} from "recoil";
+import {RecoilRoot, useRecoilState, useRecoilValue} from "recoil";
 import ReactNativeRecoilPersist, {
     ReactNativeRecoilPersistGate,
 } from "react-native-recoil-persist";
@@ -17,21 +17,18 @@ import LottieView from 'lottie-react-native';
 
 import Main from '@screens/Main';
 import Login from '@screens/Login';
+import Toast from "react-native-toast-message";
 
 const Stack = createNativeStackNavigator();
 
 const RootNavigator = () => {
-    const token = useRecoilValue(tokenState);
-
-    useEffect(() => {
-        console.log("rootNavigator", token);
-    },[token])
+    const [token, setToken] = useRecoilState(tokenState);
 
     return (
         <NavigationContainer>
             <Stack.Navigator
                 screenOptions={{ headerShown: false }}
-                initialRouteName={token ? "Main" : "Login"}
+                initialRouteName={token.accessToken ? "Main" : "Login"}
             >
                 <Stack.Screen name="Main" component={Main} />
                 <Stack.Screen name="Login" component={Login} />
@@ -62,6 +59,7 @@ const App = () => {
                                     /> : <RootNavigator />
                             }
                         </BottomSheetModalProvider>
+                        <Toast/>
                     </GestureHandlerRootView>
                 </React.Suspense>
             </ReactNativeRecoilPersistGate>
