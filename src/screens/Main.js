@@ -11,8 +11,8 @@ import MyLocationPin from "@components/MyLocationPin";
 import MyLocationButton from "../components/MyLocationButton";
 
 import BottomSheet from "@components/BottomSheet";
-import { useSetRecoilState } from "recoil";
-import { screenState } from "@apis/atoms";
+import { useRecoilState, useSetRecoilState } from "recoil";
+import { screenState, tokenState, Screen } from "@apis/atoms";
 import { getMarkersSimiple } from "@apis/apiServices";
 
 const Main = ({ navigation }) => {
@@ -24,8 +24,6 @@ const Main = ({ navigation }) => {
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
     const [markersLoading, markers, getMarkersSimpleCallback] = useApi(getMarkersSimiple, true);
-
-    const P0 = {latitude: 37.4214938, longitude: -122.083922};
 
     useEffect(() => {
         setGeoLocation();
@@ -71,6 +69,7 @@ const Main = ({ navigation }) => {
                 setLocationTrackingMode={3}
                 logoMargin={{top: vh(200), left: 0, bottom: 0, right: 0}}
                 scaleBar={false}
+                useTextureView={true}
             >
                 {
                     // 현 위치를 표시해주는 마커
@@ -84,6 +83,7 @@ const Main = ({ navigation }) => {
                         </Marker>
                     ) : null
                 }
+
                 {
                     !markersLoading && markers.map((marker, idx) => (
                         <Marker
@@ -93,7 +93,7 @@ const Main = ({ navigation }) => {
                             coordinate={{latitude: parseFloat(marker.latitude), longitude: parseFloat(marker.longitude)}}
                             onClick={async () => {
                                 bottomSheetModalRef.current?.present();
-                                setScreen("Pin");
+                                setScreen(Screen.Pin);
                             }}
                         >
                             <Image
@@ -103,6 +103,7 @@ const Main = ({ navigation }) => {
                         </Marker>
                     ))
                 }
+
             </NaverMapView>
 
             <MyLocationButton findLocation={findLocation} setFindLocation={setFindLocation} />

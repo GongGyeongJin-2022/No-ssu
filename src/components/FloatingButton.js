@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import {useSetRecoilState} from "recoil";
-import {screenState} from "@apis/atoms";
+import {screenState, Screen} from "@apis/atoms";
 import {useBottomSheetModalRef} from "@hooks/Hooks";
 
 export const FloatingButton = () => {
@@ -62,13 +62,13 @@ export const FloatingButton = () => {
                 <>
                     <TouchableWithoutFeedback onPress={() => {
                         bottomSheetModalRef.current?.present();
-                        setScreen("Upload")}}>
+                        setScreen(Screen.Upload)}}>
                         <Animated.View style={[styles.button, styles.item, pinStyle]}>
                             <Icon name="map-pin" size={20} color="#93CE92" />
                         </Animated.View>
                     </TouchableWithoutFeedback>
 
-                    <TouchableWithoutFeedback onPress={() => {setScreen("Mypage")}}>
+                    <TouchableWithoutFeedback onPress={() => {setScreen(Screen.Mypage)}}>
                         <Animated.View style={[styles.button, styles.item, userStyle]}>
                             <Icon name="user" size={20} color="#6EBFB0" />
                         </Animated.View>
