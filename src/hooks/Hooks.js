@@ -47,6 +47,7 @@ export const useApi = (api, authHeader=false) => {
         const headers = {
             'Authorization': 'Bearer ' + token,
             // 'Content-Type': 'application/json'
+            // 'Content-Type': 'application/json'
         }
         return headers
     }
@@ -55,10 +56,17 @@ export const useApi = (api, authHeader=false) => {
         if(err.response.status === 403) {
             console.log("403")
             return postTokenRefresh({"refresh": refreshToken})
-                .then(() => {
+                .then((status) => {
                     console.log("tokenRefresh finished")
-                    return {data:callback(...args)}
+                    if(status >= 400) return {status: false};
+                    return {data: callback(...args), status: false};
                 })
+        } else {
+            console.log("unhandled error", err.response.status, err.response)
+            setTimeout(() => {
+                callback(...args);
+            }, 3000)
+            return {status:false};
         }
     }
 
@@ -71,14 +79,16 @@ export const useApi = (api, authHeader=false) => {
                     accessToken = token.accessToken;
                     refreshToken = token.refreshToken;
                     console.log("accessToken token", accessToken);
+                    console.log("refreshToken token", refreshToken);
                 }
-                const {data} = authHeader ? (
+                const {data, status} = authHeader ? (
                     await api(makeHeaders(accessToken), ...args)
-                    .catch(err => errorHandling(err, refreshToken, ...args))
+                        .catch(err => errorHandling(err, refreshToken, ...args))
                 ) : (
                     await api(...args)
-                    .catch(err => errorHandling(err, refreshToken, ...args))
+                        .catch(err => errorHandling(err, refreshToken, ...args))
                 );
+                if(!status) return;
                 setResolved(data);
                 setLoading(false);
                 console.log("final data",data);
