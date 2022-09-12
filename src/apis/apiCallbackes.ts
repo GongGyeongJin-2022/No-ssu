@@ -37,10 +37,9 @@ export const usePostTokenRefreshCallback = () => {
                             accessToken: data.access,
                             refreshToken: body.refresh
                         });
-                        return res.response.status
+                        return res.status
                     })
                     .catch(err => {
-                        console.log("token refresh error", err.response.status)
                         if(err.response.status === 401) {
                             set(tokenState, {
                                 accessToken: '',
