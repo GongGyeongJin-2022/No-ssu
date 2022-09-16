@@ -20,38 +20,15 @@ import MotionSlider from 'react-native-motion-slider';
 import { vw, vh } from 'react-native-css-vh-vw';
 import Toast from "react-native-toast-message";
 import {useApi} from "@hooks/Hooks";
-import {postMarker} from "@apis/apiServices";
+import {getTag, postMarker} from "@apis/apiServices";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {screenState, tokenState, Screen} from "@apis/atoms";
 import Geolocation from "@react-native-community/geolocation";
 
 const Upload = () => {
-    const [tags, setTags] = useState([
-        {
-            name: '플라스틱',
-            selected: false
-        },
-        {
-            name: '종이',
-            selected: false
-        },
-        {
-            name: '유리',
-            selected: false
-        },
-        {
-            name: '일반쓰레기',
-            selected: false
-        },
-        {
-            name: '캔/알루미늄',
-            selected: false
-        },
-        {
-            name: '음식물쓰레기',
-            selected: false
-        }
-    ]);
+    const [tagLoading, tagResolved, tagApi] = useApi(getTag, true);
+    const [tags, setTags] = useState();
+
     const [sizes, setSizes] = useState([
         {
             name: '소형',
@@ -76,6 +53,24 @@ const Upload = () => {
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
 
     const setScreen = useSetRecoilState(screenState);
+
+    useEffect(() => {
+        console.log("get Tag")
+        tagApi()
+            .then((resolved) => {
+                console.log("tag resolved", resolved);
+                setTags(
+                    resolved.map((tag) => ({
+                            ...tag,
+                            selected: false
+                        })
+                    )
+                )
+            })
+            .catch(err => {
+                console.log("error!!!!!!!",err);
+            })
+    },[]);
 
     const setGeoLocation = () => {
         Geolocation.getCurrentPosition(
@@ -102,23 +97,17 @@ const Upload = () => {
         setter(items);
     }
 
-    // const handleSizeChange = (selectedIdx) => {
-    //     setSizes(prev => {
-    //         return prev.map((el, idx) => {
-    //             if(selectedIdx === idx) {
-    //                 return {
-    //                     name: el.name,
-    //                     selected: true
-    //                 }
-    //             } else {
-    //                 return {
-    //                     name: el.name,
-    //                     selected: false
-    //                 }
-    //             }
-    //         })
-    //     })
-    // }
+    const handleSizeChange = (selectedIdx) => {
+        console.log("selectedIdx",selectedIdx);
+        setSizes(prev => {
+            return prev.map((el, idx) => (
+                {
+                    ...el,
+                    selected: (selectedIdx === idx)
+                }
+            ))
+        })
+    }
 
     const imagePicker = () => {
         ImagePicker.openCamera({
@@ -131,11 +120,6 @@ const Upload = () => {
             console.log(image.path);
             setImage(image);
             setGeoLocation();
-        });
-    }
-    const jsonBlob = (obj) => {
-        return new Blob([JSON.stringify(obj)], {
-            type: "application/json",
         });
     }
 
@@ -220,71 +204,99 @@ const Upload = () => {
 
     return (
         <View style={styles.fullContainer}>
-        <View style={styles.container}>
             {
-                image ? (
-                    <ImageModal style={styles.image} resizeMode={"contain"} source={{uri: image.path}}/>
+                tagLoading ? (
+                    <View>
+                        <Text>
+                            loading
+                        </Text>
+                    </View>
                 ) : (
+                    <>
+                        <View style={styles.container}>
+                            {
+                                image ? (
+                                    <ImageModal style={styles.image}  source={{uri: image.path}} modalImageResizeMode={"contain"} resizeMode={"cover"}/>
+                                ) : (
 
-                    <TouchableOpacity onPress={imagePicker}>
-                        <View style={styles.imagePickerButton}>
-                            <Text style={styles.imagePickerText}>
-                                이미지
-                            </Text>
+                                    <TouchableOpacity onPress={imagePicker}>
+                                        <View style={styles.imagePickerButton}>
+                                            <Text style={styles.imagePickerText}>
+                                                이미지
+                                            </Text>
+                                        </View>
+                                    </TouchableOpacity>
+                                )
+                            }
+                            <Text style={styles.label}>태그</Text>
+                            <View style={styles.tag}>
+                                {
+                                    tags && tags.map((tag, idx) => (
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                handleChange(tags, setTags, idx)
+                                            }}
+                                            key={idx}
+                                        >
+                                            <View style={{
+                                                ...styles.tagItem,
+                                                backgroundColor: tags[idx].selected ? 'black' : 'white'
+                                            }}>
+                                                <Text style={{
+                                                    ...styles.tagItemText,
+                                                    color: tags[idx].selected ? 'white' : 'black'
+                                                }}>{"# " + tag.name}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    ))
+                                }
+                            </View>
+                            <Text style={styles.label}>사이즈</Text>
+                            <View style={styles.tag}>
+                                {
+                                    sizes.map((tag, idx) => (
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                handleSizeChange(idx);
+                                            }}
+                                            key={idx}
+                                        >
+                                            <View style={{
+                                                ...styles.tagItem,
+                                                backgroundColor: sizes[idx].selected ? 'black' : 'white'
+                                            }}>
+                                                <Text style={{
+                                                    ...styles.tagItemText,
+                                                    color: sizes[idx].selected ? 'white' : 'black'
+                                                }}>{"# " + tag.name}</Text>
+                                            </View>
+                                        </TouchableOpacity>
+                                    ))
+                                }
+                            </View>
+                            <Text style={styles.label}>코멘트</Text>
+                            <View style={styles.commentContainer}>
+                                <TextInput style={styles.comment} onChangeText={setComment} value={comment}/>
+                            </View>
+                            <Text style={styles.label}>리워드</Text>
+                            <View style={styles.rewardContainer}>
+                                <MotionSlider
+                                    min={1}
+                                    max={100}
+                                    value={3}
+                                    decimalPlaces={0}
+                                    units={'P'}
+                                    backgroundColor={['rgb(117, 176, 116)', 'rgb(157, 216, 156)']}
+                                    onValueChanged={(value) => setReward(value)}
+                                />
+                            </View>
                         </View>
-                    </TouchableOpacity>
+                        <TouchableOpacity style={styles.submitButton} onPress={uploadMarker}>
+                            <Text style={styles.submitButtonText}>치워주세요!</Text>
+                        </TouchableOpacity>
+                    </>
                 )
             }
-            <Text style={styles.label}>태그</Text>
-            <View style={styles.tag}>
-                {
-                    tags.map((tag, idx) => (
-                        <TouchableOpacity
-                            onPress={() => {handleChange(tags, setTags, idx)}}
-                            key={idx}
-                        >
-                            <View style={{...styles.tagItem, backgroundColor: tags[idx].selected ? 'black' : 'white'}}>
-                                <Text style={{...styles.tagItemText, color: tags[idx].selected ? 'white' : 'black'}}>{"# " + tag.name}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    ))
-                }
-            </View>
-            <Text style={styles.label}>사이즈</Text>
-            <View style={styles.tag}>
-                {
-                    sizes.map((tag, idx) => (
-                        <TouchableOpacity
-                            onPress={() => {handleChange(sizes, setSizes, idx)}}
-                            key={idx}
-                        >
-                            <View style={{...styles.tagItem, backgroundColor: sizes[idx].selected ? 'black' : 'white'}}>
-                                <Text style={{...styles.tagItemText, color: sizes[idx].selected ? 'white' : 'black'}}>{"# " + tag.name}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    ))
-                }
-            </View>
-            <Text style={styles.label}>코멘트</Text>
-            <View style={styles.commentContainer}>
-                <TextInput style={styles.comment} onChangeText={setComment} value={comment}/>
-            </View>
-            <Text style={styles.label}>리워드</Text>
-            <View style={styles.rewardContainer}>
-                <MotionSlider
-                    min={1}
-                    max={100}
-                    value={3}
-                    decimalPlaces={0}
-                    units={'P'}
-                    backgroundColor={['rgb(117, 176, 116)', 'rgb(157, 216, 156)']}
-                    onValueChanged={(value) => setReward(value)}
-                />
-            </View>
-        </View>
-        <TouchableOpacity style={styles.submitButton} onPress={uploadMarker}>
-            <Text style={styles.submitButtonText}>치워주세요!</Text>
-        </TouchableOpacity>
     </View>
     )
 };

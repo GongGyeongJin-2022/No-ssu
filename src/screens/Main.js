@@ -15,7 +15,7 @@ import {screenState, tokenState, Screen} from "@apis/atoms";
 import {getMarkersSimiple} from "@apis/apiServices";
 
 const Main = ({ navigation }) => {
-    const setScreen = useSetRecoilState(screenState)
+    const [screen, setScreen] = useRecoilState(screenState)
 
     // ref
     const bottomSheetModalRef = useBottomSheetModalRef();
@@ -23,11 +23,15 @@ const Main = ({ navigation }) => {
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
     const [markersLoading, markers, getMarkersSimpleCallback] = useApi(getMarkersSimiple, true);
+    const [selectedMarkerId, setSelectedMarkerId] = useState();
 
+    // 화면이 메인화면으로 바뀌면 현재 위치설정하고, 마커들 요청함
     useEffect(() => {
-        setGeoLocation();
-        getMarkersSimpleCallback();
-    }, []);
+        if(screen === Screen.Main) {
+            setGeoLocation();
+            getMarkersSimpleCallback();
+        }
+    },[screen]);
 
     useInterval(() => {
         if (findLocation) {
@@ -60,7 +64,7 @@ const Main = ({ navigation }) => {
 
     return (
         <View>
-            <BottomSheet/>
+            <BottomSheet selectedMarkerId={selectedMarkerId}/>
             <NaverMapView
                 style={{width: '100%', height: '100%'}}
                 showsMyLocationButton={false}
@@ -87,6 +91,7 @@ const Main = ({ navigation }) => {
                             key={idx}
                             coordinate={{latitude: parseFloat(marker.latitude), longitude: parseFloat(marker.longitude)}}
                             onClick={async () => {
+                                setSelectedMarkerId(marker.id);
                                 bottomSheetModalRef.current?.present();
                                 setScreen(Screen.Pin);
                             }}

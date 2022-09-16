@@ -67,3 +67,20 @@ export const postTokenRefresh = (body:any):Promise<AxiosResponse> => {
         body
     );
 }
+
+export const getTag = (body: any):Promise<AxiosResponse> => {
+    console.log("getTAg1!!")
+    return axios.get(
+        `${URL}/api/tag/`
+    )
+}
+
+export const getMarkerDetail = (header: any, id: number):Promise<AxiosResponse> => {
+    return axios.get(
+        `${URL}/api/marker/${id}`,
+        {
+            withCredentials: false,
+            headers: header
+        }
+    )
+}
