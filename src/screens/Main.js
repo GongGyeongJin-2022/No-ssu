@@ -23,6 +23,7 @@ const Main = ({ navigation }) => {
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
     const [markersLoading, markers, getMarkersSimpleCallback] = useApi(getMarkersSimiple, true);
+    const [selectedMarkerId, setSelectedMarkerId] = useState();
 
     useEffect(() => {
         setGeoLocation();
@@ -60,7 +61,7 @@ const Main = ({ navigation }) => {
 
     return (
         <View>
-            <BottomSheet/>
+            <BottomSheet selectedMarkerId={selectedMarkerId}/>
             <NaverMapView
                 style={{width: '100%', height: '100%'}}
                 showsMyLocationButton={false}
@@ -87,6 +88,7 @@ const Main = ({ navigation }) => {
                             key={idx}
                             coordinate={{latitude: parseFloat(marker.latitude), longitude: parseFloat(marker.longitude)}}
                             onClick={async () => {
+                                setSelectedMarkerId(marker.id);
                                 bottomSheetModalRef.current?.present();
                                 setScreen(Screen.Pin);
                             }}

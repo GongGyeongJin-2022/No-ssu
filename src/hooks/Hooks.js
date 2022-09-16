@@ -53,6 +53,7 @@ export const useApi = (api, authHeader=false) => {
     }
 
     const errorHandling = (err, refreshToken, ...args) => {
+        console.log("?")
         if(err.response.status === 403) {
             console.log("403")
             return postTokenRefresh({"refresh": refreshToken})

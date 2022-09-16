@@ -74,3 +74,13 @@ export const getTag = (body: any):Promise<AxiosResponse> => {
         `${URL}/api/tag/`
     )
 }
+
+export const getMarkerDetail = (header: any, id: number):Promise<AxiosResponse> => {
+    return axios.get(
+        `${URL}/api/marker/${id}`,
+        {
+            withCredentials: false,
+            headers: header
+        }
+    )
+}
