@@ -2,7 +2,6 @@ import React from "react";
 import { Text, View, StyleSheet, Image, TouchableHighlight } from "react-native";
 import { vh, vw } from "react-native-css-vh-vw";
 import NaverMapView, { Marker } from "react-native-nmap";
-import MyLocationPin from "@components/MyLocationPin";
 import { ScrollView } from "react-native-gesture-handler";
 
 const LogItem = () => {
@@ -22,13 +21,13 @@ const LogItem = () => {
                     </NaverMapView>
                 </View>
                 <View style={styles.logItemInfo}>
-                    <Text style={{fontSize: 17, fontWeight: '400'}}>2022.07.25 12시 13분</Text>
+                    <Text style={{fontSize: 17, fontWeight: '400', color: 'black'}}>2022.07.25 12시 13분</Text>
                     <View style={styles.logItemPostedUser}>
-                        <Text style={{marginRight: 10}}>의뢰인</Text>
+                        <Text style={{marginRight: 10, color: 'black'}}>의뢰인</Text>
                         <Text>상상부기</Text>
                     </View>
                     <View style={styles.logItemCleanUser}>
-                        <Text style={{marginRight: 10}}>처리인</Text>
+                        <Text style={{marginRight: 10, color: 'black'}}>처리인</Text>
                         <Text>김한성</Text>
                     </View>
                 </View>
@@ -59,7 +58,7 @@ const MyPage = () => {
             <View style={styles.activityContainer}>
                 <View style={styles.activityDivider}>
                     <Text style={styles.activityText}>활동</Text>
-                    <View style={{borderTopWidth: 0.75, width: vw(68)}}></View>
+                    <View style={{borderTopWidth: 0.75, width: vw(68), color: 'black'}}></View>
                 </View>
                 <View style={styles.activityMap}>
                     <NaverMapView
@@ -69,7 +68,23 @@ const MyPage = () => {
                         zoomControl={false}
                         setLocationTrackingMode={3}
                         logoMargin={{top: vh(200), left: 0, bottom: 0, right: 0}}
+                        center={activityMapCenter}
                     >
+                            {
+                                !markersLoading && markers.map((marker, idx) => (
+                                    <Marker
+                                        key={idx}
+                                        width={60}
+                                        height={60}
+                                        coordinate={{latitude: parseFloat(marker.latitude), longitude: parseFloat(marker.longitude)}}
+                                    >
+                                        <Image
+                                            source={require('@assets/img/marker_green.png')}
+                                            style={{width: 60, height: 60}}
+                                        />
+                                    </Marker>
+                                ))
+                            }
                     </NaverMapView>
                 </View>
             </View>
@@ -142,9 +157,11 @@ const styles = StyleSheet.create({
     name: {
         fontSize: 30,
         fontWeight: 'bold',
+        color: 'black'
     },
     pointText: {
         fontSize: 20,
+        color: 'black'
     },
     activityContainer: {
         marginTop: vh(5),
@@ -174,6 +191,7 @@ const styles = StyleSheet.create({
     logText: {
         fontSize: 20,
         marginRight: 15,
+        color: 'black'
     },
     logDivider: {
         display: 'flex',
