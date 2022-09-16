@@ -15,7 +15,7 @@ import {screenState, tokenState, Screen} from "@apis/atoms";
 import {getMarkersSimiple} from "@apis/apiServices";
 
 const Main = ({ navigation }) => {
-    const setScreen = useSetRecoilState(screenState)
+    const [screen, setScreen] = useRecoilState(screenState)
 
     // ref
     const bottomSheetModalRef = useBottomSheetModalRef();
@@ -25,10 +25,13 @@ const Main = ({ navigation }) => {
     const [markersLoading, markers, getMarkersSimpleCallback] = useApi(getMarkersSimiple, true);
     const [selectedMarkerId, setSelectedMarkerId] = useState();
 
+    // 화면이 메인화면으로 바뀌면 현재 위치설정하고, 마커들 요청함
     useEffect(() => {
-        setGeoLocation();
-        getMarkersSimpleCallback();
-    }, []);
+        if(screen === Screen.Main) {
+            setGeoLocation();
+            getMarkersSimpleCallback();
+        }
+    },[screen]);
 
     useInterval(() => {
         if (findLocation) {
