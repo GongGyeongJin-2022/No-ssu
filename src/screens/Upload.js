@@ -100,19 +100,12 @@ const Upload = () => {
     const handleSizeChange = (selectedIdx) => {
         console.log("selectedIdx",selectedIdx);
         setSizes(prev => {
-            return prev.map((el, idx) => {
-                if(selectedIdx === idx) {
-                    return {
-                        name: el.name,
-                        selected: true
-                    }
-                } else {
-                    return {
-                        name: el.name,
-                        selected: false
-                    }
+            return prev.map((el, idx) => (
+                {
+                    ...el,
+                    selected: (selectedIdx === idx)
                 }
-            })
+            ))
         })
     }
 
@@ -127,11 +120,6 @@ const Upload = () => {
             console.log(image.path);
             setImage(image);
             setGeoLocation();
-        });
-    }
-    const jsonBlob = (obj) => {
-        return new Blob([JSON.stringify(obj)], {
-            type: "application/json",
         });
     }
 
@@ -228,7 +216,7 @@ const Upload = () => {
                         <View style={styles.container}>
                             {
                                 image ? (
-                                    <ImageModal style={styles.image} resizeMode={"contain"} source={{uri: image.path}}/>
+                                    <ImageModal style={styles.image}  source={{uri: image.path}} modalImageResizeMode={"contain"} resizeMode={"cover"}/>
                                 ) : (
 
                                     <TouchableOpacity onPress={imagePicker}>
