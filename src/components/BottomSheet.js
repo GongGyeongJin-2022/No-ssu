@@ -44,6 +44,7 @@ const BottomSheet = () => {
             onDismiss={() => {
                 setScreen(Screen.None);
             }}
+            enableOverDrag={false}
         >
             <View>
                 {
