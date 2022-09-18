@@ -24,6 +24,7 @@ import {getTag, postMarker} from "@apis/apiServices";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {screenState, tokenState, Screen} from "@apis/atoms";
 import Geolocation from "@react-native-community/geolocation";
+import Carousel from 'react-native-reanimated-carousel';
 
 const Upload = () => {
     const [tagLoading, tagResolved, tagApi] = useApi(getTag, true);
@@ -46,13 +47,17 @@ const Upload = () => {
             selected: false
         }
     ]);
-    const [image, setImage] = useState(null);
+    const [images, setImages] = useState([]);
     const [comment, setComment] = useState('');
     const [reward, setReward] = useState(10);
     const [markerLoading, markerResolved, callApi] = useApi(postMarker, true);
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
 
     const setScreen = useSetRecoilState(screenState);
+
+    useEffect(() => {
+        console.log("images",images);
+    },[images])
 
     useEffect(() => {
         console.log("get Tag")
@@ -118,7 +123,7 @@ const Upload = () => {
             mediaType: 'photo',
         }).then(image => {
             console.log(image.path);
-            setImage(image);
+            setImages(prev => [...prev, image.path]);
             setGeoLocation();
         });
     }
@@ -126,7 +131,7 @@ const Upload = () => {
     const uploadMarker = () => {
         console.log("upload");
 
-        if(!image) {
+        if(!images) {
             Toast.show({
                 type: 'error',
                 text1: '등록 실패',
@@ -138,8 +143,8 @@ const Upload = () => {
         let tagFlag = true, sizeFlag = true;
         let formData = new FormData();
         formData.append("image", {
-            uri: image.path,
-            type: image.mime,
+            uri: images.path,
+            type: images.mime,
             name: 'addressimage.jpg'
         });
         formData.append("reward_reward", reward); // TODO: reward를 사용자의 point를 초과하여 업로드할수 없게 안전장치 필요
@@ -214,20 +219,52 @@ const Upload = () => {
                 ) : (
                     <>
                         <View style={styles.container}>
-                            {
-                                image ? (
-                                    <ImageModal style={styles.image}  source={{uri: image.path}} modalImageResizeMode={"contain"} resizeMode={"cover"}/>
-                                ) : (
 
-                                    <TouchableOpacity onPress={imagePicker}>
-                                        <View style={styles.imagePickerButton}>
-                                            <Text style={styles.imagePickerText}>
-                                                이미지
-                                            </Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                )
-                            }
+
+
+                                    <>
+                                        <Carousel
+                                            loop={false}
+                                            width={vw(90)}
+                                            height={vh(30)}
+                                            // autoPlay={true}
+                                            data={[...images, 0]}
+                                            mode="parallax"
+                                            scrollAnimationDuration={1000}
+                                            onSnapToItem={(index) => console.log('current index:', index)}
+                                            renderItem={({ index }) => {
+                                                    if(images.length >= 5 && index === images.length) {
+                                                        return null;
+                                                    } else if(index === images.length) {
+                                                        return (
+                                                            <TouchableOpacity onPress={imagePicker}>
+                                                                <View style={styles.imagePickerButton}>
+                                                                    <Text style={styles.imagePickerText}>
+                                                                        이미지
+                                                                    </Text>
+                                                                </View>
+                                                            </TouchableOpacity>
+                                                        )
+                                                    } else {
+                                                        return (
+                                                            <View
+                                                                style={{
+                                                                    flex: 1,
+                                                                    borderWidth: 1,
+                                                                    justifyContent: 'center',
+                                                                }}
+                                                            >
+                                                                <Image style={styles.image}  source={{uri: images[index]}} modalImageResizeMode={"contain"} resizeMode={"cover"}/>
+                                                            </View>
+                                                        )
+                                                    }
+                                                }
+
+                                            }
+                                        />
+                                    </>
+
+
                             <Text style={styles.label}>태그</Text>
                             <View style={styles.tag}>
                                 {
@@ -323,8 +360,9 @@ const styles = StyleSheet.create({
     },
     image: {
         alignSelf: 'center',
-        width: vw(100),
-        height: vh(30)
+        width: vw(90),
+        height: vh(30),
+        // borderRadius: 10
     },
     tag: {
         alignSelf: "stretch",
