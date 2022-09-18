@@ -6,6 +6,7 @@ import { useRecoilState } from "recoil";
 import {screenState, Screen} from "@apis/atoms";
 
 import Pin from "@screens/Pin";
+import MyPage from "@screens/MyPage";
 import Upload from "@screens/Upload";
 
 const BottomSheet = ({selectedMarkerId}) => {
@@ -48,23 +49,15 @@ const BottomSheet = ({selectedMarkerId}) => {
             <View>
                 {
                     screen === Screen.Main ? (
-                        <>
-                            <Text>
-                                Main
-                            </Text>
-                        </>
+                        <Text>
+                            Main
+                        </Text>
                     ) : screen === Screen.Upload ? (
-                        <>
-                            <Upload/>
-                        </>
+                        <Upload />
                     ) : screen === Screen.Mypage ? (
-                        <>
-                            <Text>
-                                Mypage
-                            </Text>
-                        </>
+                        <MyPage />
                     ) : screen === "Pin" ? (
-                        <Pin  selectedMarkerId={selectedMarkerId}/>
+                        <Pin  selectedMarkerId={selectedMarkerId} />
                     ) : null
                 }
             </View>
