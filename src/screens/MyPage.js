@@ -77,7 +77,11 @@ const MyPage = () => {
     }, []);
 
     return (
-        <ScrollView style={styles.container}  contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}>
+        <ScrollView
+            style={styles.container}
+            contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}
+            overScrollMode="never"
+        >
             <View style={styles.infoContainer}>
                 <View style={styles.profileImage}></View>
                 <View style={styles.info}>
