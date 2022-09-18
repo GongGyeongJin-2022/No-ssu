@@ -122,7 +122,7 @@ const Upload = () => {
             includeExif: true,
             mediaType: 'photo',
         }).then(image => {
-            console.log(image.path);
+            console.log(image);
             setImages(prev => [...prev, image.path]);
             setGeoLocation();
         });
@@ -142,11 +142,20 @@ const Upload = () => {
 
         let tagFlag = true, sizeFlag = true;
         let formData = new FormData();
-        formData.append("image", {
-            uri: images.path,
-            type: images.mime,
-            name: 'addressimage.jpg'
-        });
+        images.forEach((image, idx) => {
+            formData.append(`images_${idx}`, {
+                uri: image,
+                type: 'image/jpeg',
+                name: `addressimage${idx}.jpg`
+            });
+        })
+
+        // formData.append("image", {
+        //     uri: "file:///storage/emulated/0/Android/data/com.no_ssu/files/Pictures/512524b6-57eb-488a-8b69-6ac3b1cccd15.jpg",
+        //     type: 'image/jpeg',
+        //     name: `addressimage.jpg`
+        // });
+
         formData.append("reward_reward", reward); // TODO: reward를 사용자의 point를 초과하여 업로드할수 없게 안전장치 필요
         formData.append("longitude", location.longitude);
         formData.append("latitude", location.latitude);
@@ -162,7 +171,7 @@ const Upload = () => {
         })
 
         // formData.append("tag",1);
-        formData.append("posted_user",1)
+        // formData.append("posted_user",1)
 
         console.log(sizes)
 
