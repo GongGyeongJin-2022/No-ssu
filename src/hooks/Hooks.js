@@ -47,7 +47,6 @@ export const useApi = (api, authHeader=false) => {
         const headers = {
             'Authorization': 'Bearer ' + token,
             // 'Content-Type': 'application/json'
-            // 'Content-Type': 'application/json'
         }
         return headers
     }
