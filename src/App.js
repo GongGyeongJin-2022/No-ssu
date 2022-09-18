@@ -1,23 +1,22 @@
 import React, { useEffect, useState } from "react";
 import { Text } from "react-native";
 
-import {RecoilRoot, useRecoilState, useRecoilValue} from "recoil";
-import ReactNativeRecoilPersist, {
-    ReactNativeRecoilPersistGate,
-} from "react-native-recoil-persist";
-import {tokenState} from "@apis/atoms";
+import { RecoilRoot, useRecoilState } from "recoil";
+import ReactNativeRecoilPersist, { ReactNativeRecoilPersistGate } from "react-native-recoil-persist";
+import { tokenState } from "@apis/atoms";
 
-import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
-import { NavigationContainer, useNavigation } from "@react-navigation/native";
+import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
-import LottieView from 'lottie-react-native';
+import LottieView from "lottie-react-native";
 
-import Main from '@screens/Main';
-import Login from '@screens/Login';
+import Main from "@screens/Main";
+import Login from "@screens/Login";
 import Toast from "react-native-toast-message";
+import messaging from "@react-native-firebase/messaging";
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +38,12 @@ const RootNavigator = () => {
 
 const App = () => {
     const [splash, setSplash] = useState(true);
+
+    useEffect(() => {
+        return messaging().onMessage(async remoteMessage => {
+            console.log(remoteMessage)
+        });
+    }, []);
 
     return (
         <RecoilRoot>

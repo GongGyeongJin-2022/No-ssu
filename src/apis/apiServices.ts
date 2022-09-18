@@ -33,9 +33,12 @@ export const postGooleLoginFinish = (body:any):Promise<AxiosResponse> => {
     )
 }
 
-export const getUser = ():Promise<AxiosResponse> => {
+export const getUser = (authHeader:any,):Promise<AxiosResponse> => {
     return axios.get (
         `${URL}/api/accounts/v1/user/`,
+        {
+            headers: authHeader
+        }
     )
 }
 
@@ -81,6 +84,20 @@ export const getMarkerDetail = (header: any, id: number):Promise<AxiosResponse> 
         {
             withCredentials: false,
             headers: header
+        }
+    )
+}
+
+export const verifyFCM = (authHeader:any, body: any):Promise<AxiosResponse> => {
+    return axios.post(
+        `${URL}/api/accounts/v1/verify-fcm/`,
+        body,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                ...authHeader
+            },
+            withCredentials: false
         }
     )
 }
