@@ -9,7 +9,7 @@ import Pin from "@screens/Pin";
 import MyPage from "@screens/MyPage";
 import Upload from "@screens/Upload";
 
-const BottomSheet = () => {
+const BottomSheet = ({selectedMarkerId}) => {
     const [screen, setScreen] = useRecoilState(screenState)
     const bottomSheetModalRef = useBottomSheetModalRef();
     const [snapPoints, setSnapPoints] = useState([]);
@@ -18,7 +18,7 @@ const BottomSheet = () => {
 
     const snapPointsList = {
         'Main': ['3%', '25%', '75%'],
-        'Pin': ['40%'],
+        'Pin': ['45%'],
         'Upload': ['100%'],
         'Mypage': ['100%'],
 
@@ -57,7 +57,7 @@ const BottomSheet = () => {
                     ) : screen === Screen.Mypage ? (
                         <MyPage />
                     ) : screen === "Pin" ? (
-                        <Pin />
+                        <Pin  selectedMarkerId={selectedMarkerId} />
                     ) : null
                 }
             </View>

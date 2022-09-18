@@ -33,9 +33,12 @@ export const postGooleLoginFinish = (body:any):Promise<AxiosResponse> => {
     )
 }
 
-export const getUser = ():Promise<AxiosResponse> => {
+export const getUser = (authHeader:any,):Promise<AxiosResponse> => {
     return axios.get (
         `${URL}/api/accounts/v1/user/`,
+        {
+            headers: authHeader
+        }
     )
 }
 
@@ -66,4 +69,35 @@ export const postTokenRefresh = (body:any):Promise<AxiosResponse> => {
         `${URL}/api/accounts/v1/token/refresh/`,
         body
     );
+}
+
+export const getTag = (body: any):Promise<AxiosResponse> => {
+    console.log("getTAg1!!")
+    return axios.get(
+        `${URL}/api/tag/`
+    )
+}
+
+export const getMarkerDetail = (header: any, id: number):Promise<AxiosResponse> => {
+    return axios.get(
+        `${URL}/api/marker/${id}`,
+        {
+            withCredentials: false,
+            headers: header
+        }
+    )
+}
+
+export const verifyFCM = (authHeader:any, body: any):Promise<AxiosResponse> => {
+    return axios.post(
+        `${URL}/api/accounts/v1/verify-fcm/`,
+        body,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                ...authHeader
+            },
+            withCredentials: false
+        }
+    )
 }

@@ -34,3 +34,7 @@ export const bottomSheetModalRefState = atom ({
     default: null
 });
 
+export const userState = atom ({
+    key: "user",
+    default: null
+});

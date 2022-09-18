@@ -11,24 +11,55 @@ import MyLocationPin from "@components/MyLocationPin";
 import MyLocationButton from "../components/MyLocationButton";
 
 import BottomSheet from "@components/BottomSheet";
-import { useRecoilState, useSetRecoilState } from "recoil";
-import { screenState, tokenState, Screen } from "@apis/atoms";
-import { getMarkersSimiple } from "@apis/apiServices";
+import { useRecoilState } from "recoil";
+import { screenState, Screen, userState } from "@apis/atoms";
+import { getMarkersSimiple, getUser, verifyFCM } from "@apis/apiServices";
+import messaging from "@react-native-firebase/messaging";
 
 const Main = ({ navigation }) => {
-    const setScreen = useSetRecoilState(screenState)
+    const [screen, setScreen] = useRecoilState(screenState);
 
     // ref
     const bottomSheetModalRef = useBottomSheetModalRef();
 
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
+    const [selectedMarkerId, setSelectedMarkerId] = useState();
+
+
+    // api
     const [markersLoading, markers, getMarkersSimpleCallback] = useApi(getMarkersSimiple, true);
+    const [userLoading, userResult, getUserCallback] = useApi(getUser, true);
+    const [verifyFCMLoading, verifyFCMResult, verifyFCMCallback] = useApi(verifyFCM, true);
 
     useEffect(() => {
-        setGeoLocation();
-        getMarkersSimpleCallback();
+        getUserCallback()
+            .then(async (res) => {
+                if (res) {
+                    console.log(res)
+                    const authStatus = await messaging().requestPermission();
+                    const enabled = authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+                        authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+                    if (enabled) {
+                        const formdata = new FormData();
+                        formdata.append("fcm_token", await messaging().getToken());
+                        await verifyFCMCallback(formdata)
+                            .then((res) => {
+                                console.log(res)
+                            })
+                    }
+                }
+            })
     }, []);
+
+    // 화면이 메인화면으로 바뀌면 현재 위치설정하고, 마커들 요청함
+    useEffect(() => {
+        if(screen === Screen.Main) {
+            setGeoLocation();
+            getMarkersSimpleCallback();
+        }
+    },[screen]);
 
     useInterval(() => {
         if (findLocation) {
@@ -61,7 +92,7 @@ const Main = ({ navigation }) => {
 
     return (
         <View>
-            <BottomSheet />
+            <BottomSheet selectedMarkerId={selectedMarkerId}/>
             <NaverMapView
                 style={{width: '100%', height: '100%'}}
                 showsMyLocationButton={false}
@@ -92,6 +123,7 @@ const Main = ({ navigation }) => {
                             height={60}
                             coordinate={{latitude: parseFloat(marker.latitude), longitude: parseFloat(marker.longitude)}}
                             onClick={async () => {
+                                setSelectedMarkerId(marker.id);
                                 bottomSheetModalRef.current?.present();
                                 setScreen(Screen.Pin);
                             }}
