@@ -13,8 +13,6 @@ import {
     TouchableHighlight,
     Dimensions, ScrollView, SafeAreaView
 } from 'react-native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import ImageModal from "react-native-image-modal";
 import * as ImagePicker from "react-native-image-crop-picker";
 import MotionSlider from 'react-native-motion-slider';
 import { vw, vh } from 'react-native-css-vh-vw';
@@ -25,6 +23,7 @@ import {useRecoilValue, useSetRecoilState} from "recoil";
 import {screenState, tokenState, Screen} from "@apis/atoms";
 import Geolocation from "@react-native-community/geolocation";
 import Carousel from 'react-native-reanimated-carousel';
+import {ImageCarousel} from "@components/ImageCarousel";
 
 const Upload = () => {
     const [tagLoading, tagResolved, tagApi] = useApi(getTag, true);
@@ -228,51 +227,7 @@ const Upload = () => {
                 ) : (
                     <>
                         <View style={styles.container}>
-
-
-
-                                    <>
-                                        <Carousel
-                                            loop={false}
-                                            width={vw(90)}
-                                            height={vh(30)}
-                                            // autoPlay={true}
-                                            data={[...images, 0]}
-                                            mode="parallax"
-                                            scrollAnimationDuration={1000}
-                                            onSnapToItem={(index) => console.log('current index:', index)}
-                                            renderItem={({ index }) => {
-                                                    if(images.length >= 5 && index === images.length) {
-                                                        return null;
-                                                    } else if(index === images.length) {
-                                                        return (
-                                                            <TouchableOpacity onPress={imagePicker}>
-                                                                <View style={styles.imagePickerButton}>
-                                                                    <Text style={styles.imagePickerText}>
-                                                                        이미지
-                                                                    </Text>
-                                                                </View>
-                                                            </TouchableOpacity>
-                                                        )
-                                                    } else {
-                                                        return (
-                                                            <View
-                                                                style={{
-                                                                    flex: 1,
-                                                                    borderWidth: 1,
-                                                                    justifyContent: 'center',
-                                                                }}
-                                                            >
-                                                                <Image style={styles.image}  source={{uri: images[index]}} modalImageResizeMode={"contain"} resizeMode={"cover"}/>
-                                                            </View>
-                                                        )
-                                                    }
-                                                }
-
-                                            }
-                                        />
-                                    </>
-
+                            <ImageCarousel images={images} setImages={setImages} capture={true} callback={setGeoLocation}/>
 
                             <Text style={styles.label}>태그</Text>
                             <View style={styles.tag}>

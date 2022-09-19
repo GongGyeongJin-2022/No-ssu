@@ -3,9 +3,11 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 
 import { vw, vh } from 'react-native-css-vh-vw';
 import {getMarkerDetail, getTag} from "@apis/apiServices";
-import {useApi} from "@hooks/Hooks";
-import ImageModal from "react-native-image-modal";
+import {useApi, useBottomSheetModalRef} from "@hooks/Hooks";
 import Carousel from "react-native-reanimated-carousel";
+import {useSetRecoilState} from "recoil";
+import {Screen, screenState} from "@apis/atoms";
+import {URL} from "@apis/apiServices";
 
 const sizes = {
     "L": "대형",
@@ -16,6 +18,7 @@ const sizes = {
 const Pin = ({selectedMarkerId}) => {
     const [detailLoading, detailResolved, getDetail] = useApi(getMarkerDetail, true);
     const [tagLoading, tagResolved, tagApi] = useApi(getTag, true);
+    const setScreen = useSetRecoilState(screenState);
 
     useEffect(() => {
         getDetail(selectedMarkerId);
@@ -50,7 +53,7 @@ const Pin = ({selectedMarkerId}) => {
                                         justifyContent: 'center',
                                     }}
                                 >
-                                    <Image style={styles.image}  source={{uri: detailResolved.images[index].image}} modalImageResizeMode={"contain"} resizeMode={"cover"}/>
+                                    <Image style={styles.image}  source={{uri: URL+detailResolved.images[index]}} modalImageResizeMode={"contain"} resizeMode={"cover"}/>
                                 </View>
                             )
                         }
@@ -60,7 +63,7 @@ const Pin = ({selectedMarkerId}) => {
                         {
                             detailResolved.tags.map((tagNum, idx) => (
                                 <View key={"tag"+idx}style={styles.tag}>
-                                    <Text style={styles.tagText}>#{tagResolved[tagNum].name}</Text>
+                                    <Text style={styles.tagText}>#{tagResolved[tagNum-1].name}</Text>
                                 </View>
                             ))
                         }
@@ -72,9 +75,11 @@ const Pin = ({selectedMarkerId}) => {
                     <Text style={styles.descriptionText}>{detailResolved.explanation}</Text>
                 </View>
 
-                <View style={styles.clearButton}>
+                <TouchableOpacity style={styles.clearButton} onPress={() => {
+                    setScreen(Screen.Clear);
+                }}>
                     <Text style={styles.clearButtonText}>처리했습니다!</Text>
-                </View>
+                </TouchableOpacity>
             </>
             )}
         </View>
