@@ -4,7 +4,7 @@ import { vh, vw } from "react-native-css-vh-vw";
 import NaverMapView, { Marker } from "react-native-nmap";
 import { ScrollView } from "react-native-gesture-handler";
 import { useApi } from "@hooks/Hooks";
-import { getMarkersSimiple, getUser } from "@apis/apiServices";
+import { getMarkersSimiple, getUser, postChargePoint } from "@apis/apiServices";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import { BootpayWebView } from 'react-native-bootpay';
 
@@ -46,13 +46,17 @@ const LogItem = () => {
 const MyPage = () => {
     const [markersLoading, markers, getMarkersSimpleCallback] = useApi(getMarkersSimiple, true);
     const [userLoading, user, getUserCallback] = useApi(getUser, true);
+    const [chargeLoading, charge, postChargePointCallback] = useApi(postChargePoint, true);
 
     const [activityMapCenter, setActivityMapCenter] = useState({latitude: 37.5666102, longitude: 126.9783881, zoom: 10});
 
     const bootpay = useRef(null);
 
     useEffect(() => {
-        getUserCallback();
+        getUserCallback()
+            .then((res) => {
+                console.log(res);
+            })
         getMarkersSimpleCallback()
             .then((res) => {
                 function rad2degr(rad) { return rad * 180 / Math.PI; }
@@ -86,7 +90,7 @@ const MyPage = () => {
     const handleDeposit = () => {
         const payload = {
             pg: 'payapp',
-            name: '노쓰 포인트', //결제창에 보여질 상품명
+            name: '1000 포인트', //결제창에 보여질 상품명
             order_id: '1', //개발사에 관리하는 주문번호
             method: 'card',
             price: 1000 //결제금액
@@ -95,7 +99,7 @@ const MyPage = () => {
         //결제되는 상품정보들로 통계에 사용되며, price의 합은 결제금액과 동일해야함
         const items = [
             {
-                item_name: '노쓰 포인트', //통계에 반영될 상품명
+                item_name: '1000 포인트', //통계에 반영될 상품명
                 qty: 1, //수량
                 unique: '1', //개발사에서 관리하는 상품고유번호
                 price: 1000, //상품단가
@@ -104,8 +108,8 @@ const MyPage = () => {
 
         //구매자 정보로 결제창이 미리 적용될 수 있으며, 통계에도 사용되는 정보
         const userInfo = {
-            id: user.id, //개발사에서 관리하는 회원고유번호
-            username: user.first_name, //구매자명
+            id: user?.id, //개발사에서 관리하는 회원고유번호
+            username: user?.first_name, //구매자명
             phone: '01012345678', //전화번호, 페이앱 필수
         }
 
@@ -142,6 +146,15 @@ const MyPage = () => {
 
     const onDone = (data) => {
         console.log('done', data);
+
+        const formData = new FormData();
+        formData.append('user_id', user?.id);
+        formData.append('point', 1000);
+        formData.append('data', JSON.stringify(data));
+        postChargePointCallback(formData)
+            .then((res) => {
+                getUserCallback();
+            })
     }
 
     const onClose = () => {
@@ -177,13 +190,23 @@ const MyPage = () => {
                     </View>
                 </View>
 
-                <View style={{marginTop: 50}}>
-                    <TouchableOpacity
-                        style={styles.deposit}
-                        onPress={handleDeposit}
-                    >
-                        <Text style={{color: '#93CE92'}}>입금</Text>
-                    </TouchableOpacity>
+
+                <View style={{display: 'flex', flexDirection: 'column'}}>
+                    <View style={{marginBottom: 10}}>
+                        <TouchableOpacity
+                            style={styles.withdraw}
+                        >
+                            <Text style={{color: '#ee7171'}}>출금</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View>
+                        <TouchableOpacity
+                            style={styles.deposit}
+                            onPress={handleDeposit}
+                        >
+                            <Text style={{color: '#93CE92'}}>입금</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
 
@@ -275,6 +298,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         marginTop: 10,
+    },
+    withdraw: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: 60,
+        height: 30,
+        borderRadius: 5,
+        borderWidth: 1,
+        borderColor: '#ee7171',
     },
     deposit: {
         display: 'flex',

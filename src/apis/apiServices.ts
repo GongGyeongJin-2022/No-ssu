@@ -101,3 +101,17 @@ export const verifyFCM = (authHeader:any, body: any):Promise<AxiosResponse> => {
         }
     )
 }
+
+export const postChargePoint = (authHeader:any, body: any):Promise<AxiosResponse> => {
+    return axios.post(
+        `${URL}/api/charge-point/`,
+        body,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                ...authHeader
+            },
+            withCredentials: false
+        }
+    )
+}
