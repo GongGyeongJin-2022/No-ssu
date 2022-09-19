@@ -1,10 +1,11 @@
 import React, { useEffect } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 
 import { vw, vh } from 'react-native-css-vh-vw';
 import {getMarkerDetail, getTag} from "@apis/apiServices";
 import {useApi} from "@hooks/Hooks";
 import ImageModal from "react-native-image-modal";
+import Carousel from "react-native-reanimated-carousel";
 
 const sizes = {
     "L": "대형",
@@ -32,7 +33,28 @@ const Pin = ({selectedMarkerId}) => {
             ) : (
             <>
                 <View style={styles.content}>
-                    <ImageModal source={{uri:detailResolved.image}} style={styles.image} modalImageResizeMode={"contain"} resizeMode={"cover"}/>
+                    <Carousel
+                        loop={false}
+                        width={vw(90)}
+                        height={vh(25)}
+                        // autoPlay={true}
+                        data={[...detailResolved.images]}
+                        mode="parallax"
+                        scrollAnimationDuration={1000}
+                        onSnapToItem={(index) => console.log('current index:', index)}
+                        renderItem={({ index }) => (
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        borderWidth: 1,
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Image style={styles.image}  source={{uri: detailResolved.images[index].image}} modalImageResizeMode={"contain"} resizeMode={"cover"}/>
+                                </View>
+                            )
+                        }
+                    />
 
                     <View style={styles.tagContainer}>
                         {
@@ -71,15 +93,15 @@ const styles = StyleSheet.create({
         marginRight: '5%'
     },
     image: {
+        alignSelf: 'center',
         width: vw(90),
-        height: vh(20),
-        borderRadius: 10
+        height: vh(30),
     },
     tagContainer: {
         display: 'flex',
         flexDirection: 'row',
         width: '100%',
-        marginTop: 15
+        marginTop: 8
     },
     tag: {
         display: "flex",
@@ -90,7 +112,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: '#C8C8C8',
         borderRadius: 50,
-        marginBottom: 4,
         marginHorizontal: 3
     },
     tagText: {
@@ -99,7 +120,7 @@ const styles = StyleSheet.create({
     },
     descriptionText: {
         color: '#252525',
-        marginTop: 20
+        marginTop: 12
     },
     clearButton: {
         display: 'flex',
