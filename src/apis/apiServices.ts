@@ -113,3 +113,17 @@ export const postClear = (authHeader:any, body:any):any => {
         }
     );
 }
+
+export const postChargePoint = (authHeader:any, body: any):Promise<AxiosResponse> => {
+    return axios.post(
+        `${URL}/api/charge-point/`,
+        body,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                ...authHeader
+            },
+            withCredentials: false
+        }
+    )
+}
