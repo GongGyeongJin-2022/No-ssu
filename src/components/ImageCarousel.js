@@ -27,7 +27,7 @@ const RenderCapture = ({images, setImages, index, callback}) => {
             <TouchableOpacity onPress={imagePicker}>
                 <View style={styles.imagePickerButton}>
                     <Text style={styles.imagePickerText}>
-                        이미지
+                        이미지 촬영
                     </Text>
                 </View>
             </TouchableOpacity>
