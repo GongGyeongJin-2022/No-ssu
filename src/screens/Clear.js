@@ -2,11 +2,13 @@ import React, {useEffect, useState} from "react";
 import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 
 import { vw, vh } from 'react-native-css-vh-vw';
-import {getMarkerDetail, getTag} from "@apis/apiServices";
+import {getMarkerDetail, getTag, URL} from "@apis/apiServices";
 import {useApi} from "@hooks/Hooks";
 import ImageModal from "react-native-image-modal";
 import Carousel from "react-native-reanimated-carousel";
 import {ImageCarousel} from "@components/ImageCarousel";
+import {Screen, screenState} from "@apis/atoms";
+import {useSetRecoilState} from "recoil";
 
 const sizes = {
     "L": "대형",
@@ -14,18 +16,16 @@ const sizes = {
     "S": "소형"
 }
 
-const Clear = ({selectedMarkerId}) => {
-    const [detailLoading, detailResolved, getDetail] = useApi(getMarkerDetail, true);
+const Clear = ({detailLoading, detailResolved, getDetail}) => {
     const [tagLoading, tagResolved, tagApi] = useApi(getTag, true);
     const [index, setIndex] = useState(0);
+    const setScreen = useSetRecoilState(screenState);
 
     const [images, setImages] = useState([])
 
     useEffect(() => {
-        getDetail(selectedMarkerId);
         tagApi();
-        console.log("HelperInfoBottomSheet")
-    },[selectedMarkerId])
+    },[])
 
     return (
         <View style={styles.container}>
@@ -36,11 +36,11 @@ const Clear = ({selectedMarkerId}) => {
                     </View>
                 ) : (
                     <>
+
+                        <ImageCarousel images={detailResolved.images.map(image => URL+image)} setImages={setImages} capture={false} pagingEnabled={false}/>
+                        <Text style={styles.arrow}>비교</Text>
+                        <ImageCarousel images={images} setImages={setImages} capture={true}/>
                         <View style={styles.content}>
-                            <ImageCarousel images={images} setImages={setImages} capture={false}/>
-
-                            <ImageCarousel images={images} setImages={setImages} capture={true}/>
-
                             <View style={styles.tagContainer}>
                                 {
                                     detailResolved.tags.map((tagNum, idx) => (
@@ -58,6 +58,11 @@ const Clear = ({selectedMarkerId}) => {
                         </View>
                     </>
                 )}
+            <TouchableOpacity style={styles.clearButton} onPress={() => {
+                setScreen(Screen.Clear);
+            }}>
+                <Text style={styles.clearButtonText}>확인해주세요!</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -66,7 +71,6 @@ const styles = StyleSheet.create({
     container: {
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'space-between',
         height: '100%'
     },
     content: {
@@ -104,10 +108,13 @@ const styles = StyleSheet.create({
         marginTop: 12
     },
     clearButton: {
-        display: 'flex',
+        position: 'absolute',
+        bottom: 0,
+        left: 0,
         justifyContent: 'center',
         alignItems: 'center',
         height: vh(5),
+        width: vw(100),
         backgroundColor: '#93CE92',
         borderTopLeftRadius: 5,
         borderTopRightRadius: 5,
@@ -116,6 +123,9 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 16,
         fontWeight: 'bold'
+    },
+    arrow: {
+        alignSelf: 'center'
     }
 });
 

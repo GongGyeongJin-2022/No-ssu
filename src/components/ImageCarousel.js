@@ -8,8 +8,8 @@ import ImagePicker from "react-native-image-crop-picker";
 const RenderCapture = ({images, setImages, index, callback}) => {
     const imagePicker = () => {
         ImagePicker.openCamera({
-            width: 300,
-            height: 400,
+            width: 1920,
+            height: 1080,
             cropping: true,
             includeExif: true,
             mediaType: 'photo',
@@ -39,25 +39,20 @@ const RenderCapture = ({images, setImages, index, callback}) => {
     }
 }
 const RenderImage = ({images, index}) => (
-    <View
-        style={{
-            flex: 1,
-            borderWidth: 1,
-            justifyContent: 'center',
-        }}
-    >
+    <View>
         <Image style={styles.image} source={{uri: images[index]}} modalImageResizeMode={"contain"}
                resizeMode={"cover"}/>
     </View>
 )
-export const ImageCarousel = ({images, setImages, capture, callback}) => {
+export const ImageCarousel = ({images, setImages, capture, callback, pagingEnabled=true}) => {
+    console.log("imageCarousel", images, pagingEnabled);
     return (
         <Carousel
             loop={false}
-            width={vw(90)}
+            width={vw(100)}
             height={vh(30)}
-            // autoPlay={true}
-            data={[...images, 0]}
+            snapEnabled={pagingEnabled}
+            data={capture ? [...images, 0] : [...images]}
             mode="parallax"
             scrollAnimationDuration={1000}
             onSnapToItem={(index) => console.log('current index:', index)}
@@ -76,8 +71,8 @@ const styles = StyleSheet.create({
         padding: 12,
     },
     imagePickerButton: {
-        width: "90%",
-        height: vh(30),
+        width: vw(100),
+        height: vw(100*9/16),
         backgroundColor: 'lightgray',
         justifyContent: 'center',
         alignSelf: "center",
@@ -88,70 +83,8 @@ const styles = StyleSheet.create({
     },
     image: {
         alignSelf: 'center',
-        width: vw(90),
-        height: vh(30),
-        // borderRadius: 10
-    },
-    tag: {
-        alignSelf: "stretch",
-        display: "flex",
-        flexWrap: "wrap",
-        flexDirection: "row",
-        justifyContent: "flex-start",
-        paddingHorizontal: 20,
-    },
-    tagItem: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: 76,
-        height: 24,
-        borderWidth: 1,
-        borderColor: "lightgray",
-        borderRadius: 50,
-        marginBottom: 4,
-        marginHorizontal: 3
-    },
-    tagItemText: {
-        fontSize: 10
-    },
-    label: {
-        fontSize: 20,
-        color: 'black',
-        alignSelf: "flex-start",
-        marginLeft: 20,
-        marginTop: 20,
-        marginBottom: 10
-    },
-    commentContainer: {
-
-    },
-    comment: {
-        width: "90%",
-        height: 40,
-        alignSelf: "center",
-        borderWidth: 1,
-        padding: 10,
-        borderColor: "lightgray",
+        width: vw(100),
+        height: vw(100*9/16),
         borderRadius: 10
-    },
-    rewardContainer: {
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    rewardSlider: {
-
-    },
-    submitButton: {
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: vh(6),
-        backgroundColor: '#6EBFB0',
-        borderTopLeftRadius: 5,
-        borderTopRightRadius: 5,
-    },
-    submitButtonText: {
-        color: 'white',
-        fontWeight: 'bold'
     }
 })

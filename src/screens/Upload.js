@@ -322,12 +322,6 @@ const styles = StyleSheet.create({
     imagePickerText: {
         alignSelf: 'center'
     },
-    image: {
-        alignSelf: 'center',
-        width: vw(90),
-        height: vh(30),
-        // borderRadius: 10
-    },
     tag: {
         alignSelf: "stretch",
         display: "flex",

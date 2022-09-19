@@ -8,6 +8,7 @@ import Carousel from "react-native-reanimated-carousel";
 import {useSetRecoilState} from "recoil";
 import {Screen, screenState} from "@apis/atoms";
 import {URL} from "@apis/apiServices";
+import {ImageCarousel} from "@components/ImageCarousel";
 
 const sizes = {
     "L": "대형",
@@ -15,8 +16,8 @@ const sizes = {
     "S": "소형"
 }
 
-const Pin = ({selectedMarkerId}) => {
-    const [detailLoading, detailResolved, getDetail] = useApi(getMarkerDetail, true);
+const Pin = ({detailLoading, detailResolved, getDetail, selectedMarkerId}) => {
+
     const [tagLoading, tagResolved, tagApi] = useApi(getTag, true);
     const setScreen = useSetRecoilState(screenState);
 
@@ -35,30 +36,9 @@ const Pin = ({selectedMarkerId}) => {
                 </View>
             ) : (
             <>
-                <View style={styles.content}>
-                    <Carousel
-                        loop={false}
-                        width={vw(90)}
-                        height={vh(25)}
-                        // autoPlay={true}
-                        data={[...detailResolved.images]}
-                        mode="parallax"
-                        scrollAnimationDuration={1000}
-                        onSnapToItem={(index) => console.log('current index:', index)}
-                        renderItem={({ index }) => (
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        borderWidth: 1,
-                                        justifyContent: 'center',
-                                    }}
-                                >
-                                    <Image style={styles.image}  source={{uri: URL+detailResolved.images[index]}} modalImageResizeMode={"contain"} resizeMode={"cover"}/>
-                                </View>
-                            )
-                        }
-                    />
 
+                <ImageCarousel images={detailResolved.images.map(image => URL+image)} capture={false}/>
+                <View style={styles.content}>
                     <View style={styles.tagContainer}>
                         {
                             detailResolved.tags.map((tagNum, idx) => (
@@ -105,8 +85,7 @@ const styles = StyleSheet.create({
     tagContainer: {
         display: 'flex',
         flexDirection: 'row',
-        width: '100%',
-        marginTop: 8
+        width: '100%'
     },
     tag: {
         display: "flex",
