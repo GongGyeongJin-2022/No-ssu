@@ -13,8 +13,6 @@ import {
     TouchableHighlight,
     Dimensions, ScrollView, SafeAreaView
 } from 'react-native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
-import ImageModal from "react-native-image-modal";
 import * as ImagePicker from "react-native-image-crop-picker";
 import MotionSlider from 'react-native-motion-slider';
 import { vw, vh } from 'react-native-css-vh-vw';
@@ -24,6 +22,8 @@ import {getTag, postMarker} from "@apis/apiServices";
 import {useRecoilValue, useSetRecoilState} from "recoil";
 import {screenState, tokenState, Screen} from "@apis/atoms";
 import Geolocation from "@react-native-community/geolocation";
+import Carousel from 'react-native-reanimated-carousel';
+import {ImageCarousel} from "@components/ImageCarousel";
 
 const Upload = () => {
     const [tagLoading, tagResolved, tagApi] = useApi(getTag, true);
@@ -46,13 +46,17 @@ const Upload = () => {
             selected: false
         }
     ]);
-    const [image, setImage] = useState(null);
+    const [images, setImages] = useState([]);
     const [comment, setComment] = useState('');
     const [reward, setReward] = useState(10);
     const [markerLoading, markerResolved, callApi] = useApi(postMarker, true);
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
 
     const setScreen = useSetRecoilState(screenState);
+
+    useEffect(() => {
+        console.log("images",images);
+    },[images])
 
     useEffect(() => {
         console.log("get Tag")
@@ -117,8 +121,8 @@ const Upload = () => {
             includeExif: true,
             mediaType: 'photo',
         }).then(image => {
-            console.log(image.path);
-            setImage(image);
+            console.log(image);
+            setImages(prev => [...prev, image.path]);
             setGeoLocation();
         });
     }
@@ -126,26 +130,34 @@ const Upload = () => {
     const uploadMarker = () => {
         console.log("upload");
 
-        if(!image) {
+        if(images.length < 2) {
             Toast.show({
                 type: 'error',
                 text1: '등록 실패',
-                text2: '이미지를 촬영해주세요',
+                text2: '이미지를 2장 이상 촬영해주세요',
             });
             return;
         }
 
         let tagFlag = true, sizeFlag = true;
         let formData = new FormData();
-        formData.append("image", {
-            uri: image.path,
-            type: image.mime,
-            name: 'addressimage.jpg'
-        });
+        images.forEach((image, idx) => {
+            formData.append(`images_${idx}`, {
+                uri: image,
+                type: 'image/jpeg',
+                name: `addressimage${idx}.jpg`
+            });
+        })
+
+        // formData.append("image", {
+        //     uri: "file:///storage/emulated/0/Android/data/com.no_ssu/files/Pictures/512524b6-57eb-488a-8b69-6ac3b1cccd15.jpg",
+        //     type: 'image/jpeg',
+        //     name: `addressimage.jpg`
+        // });
+
         formData.append("reward_reward", reward); // TODO: reward를 사용자의 point를 초과하여 업로드할수 없게 안전장치 필요
         formData.append("longitude", location.longitude);
         formData.append("latitude", location.latitude);
-        formData.append("status", "W")
 
         formData.append("explanation", comment);
 
@@ -157,7 +169,7 @@ const Upload = () => {
         })
 
         // formData.append("tag",1);
-        formData.append("posted_user",1)
+        // formData.append("posted_user",1)
 
         console.log(sizes)
 
@@ -214,20 +226,8 @@ const Upload = () => {
                 ) : (
                     <>
                         <View style={styles.container}>
-                            {
-                                image ? (
-                                    <ImageModal style={styles.image}  source={{uri: image.path}} modalImageResizeMode={"contain"} resizeMode={"cover"}/>
-                                ) : (
+                            <ImageCarousel images={images} setImages={setImages} capture={true} callback={setGeoLocation}/>
 
-                                    <TouchableOpacity onPress={imagePicker}>
-                                        <View style={styles.imagePickerButton}>
-                                            <Text style={styles.imagePickerText}>
-                                                이미지
-                                            </Text>
-                                        </View>
-                                    </TouchableOpacity>
-                                )
-                            }
                             <Text style={styles.label}>태그</Text>
                             <View style={styles.tag}>
                                 {
@@ -274,7 +274,7 @@ const Upload = () => {
                                     ))
                                 }
                             </View>
-                            <Text style={styles.label}>코멘트</Text>
+                            <Text style={styles.label}>요청 사항</Text>
                             <View style={styles.commentContainer}>
                                 <TextInput style={styles.comment} onChangeText={setComment} value={comment}/>
                             </View>
@@ -320,11 +320,6 @@ const styles = StyleSheet.create({
     },
     imagePickerText: {
         alignSelf: 'center'
-    },
-    image: {
-        alignSelf: 'center',
-        width: vw(100),
-        height: vh(30)
     },
     tag: {
         alignSelf: "stretch",

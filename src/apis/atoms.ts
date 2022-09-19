@@ -21,6 +21,7 @@ export const Screen = {
     Mypage: 'Mypage',
     Pin: 'Pin',
     Complete: 'Complete',
+    Clear: 'Clear',
     None: ''
 } as const;
 type Screen = typeof Screen[keyof typeof Screen];
