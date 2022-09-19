@@ -149,8 +149,12 @@ const MyPage = () => {
     }
 
     return (
-        <ScrollView style={styles.container}  contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}>
-            <BootpayWebView
+        <ScrollView
+            style={styles.container}
+            contentContainerStyle={{ flexGrow: 1, alignItems: 'center' }}
+            overScrollMode="never"
+        >
+        <BootpayWebView
                 ref={bootpay}
                 ios_application_id={'6326ebe2d01c7e001cf5ee1a'}
                 android_application_id={'6326ebe2d01c7e001cf5ee19'}

@@ -8,6 +8,7 @@ import {screenState, Screen} from "@apis/atoms";
 import Pin from "@screens/Pin";
 import MyPage from "@screens/MyPage";
 import Upload from "@screens/Upload";
+import Clear from "@screens/Clear";
 
 const BottomSheet = ({selectedMarkerId}) => {
     const [screen, setScreen] = useRecoilState(screenState)
@@ -17,13 +18,14 @@ const BottomSheet = ({selectedMarkerId}) => {
     const { dismissAll } = useBottomSheetModal();
 
     const snapPointsList = {
-        'Main': ['3%', '25%', '75%'],
-        'Pin': ['45%'],
-        'Upload': ['100%'],
-        'Mypage': ['100%'],
+        [Screen.Main]: ['3%', '25%', '75%'],
+        [Screen.Pin]: ['45%'],
+        [Screen.Upload]: ['100%'],
+        [Screen.Mypage]: ['100%'],
+        [Screen.Clear]: ['100%'],
 
         // Todo: 보완 필요
-        '': ['1%']
+        [Screen.None]: ['1%']
     }
 
     useEffect(() => {
@@ -56,8 +58,10 @@ const BottomSheet = ({selectedMarkerId}) => {
                         <Upload />
                     ) : screen === Screen.Mypage ? (
                         <MyPage />
-                    ) : screen === "Pin" ? (
-                        <Pin  selectedMarkerId={selectedMarkerId} />
+                    ) : screen === Screen.Pin ? (
+                        <Pin  selectedMarkerId={selectedMarkerId}/>
+                    ) : screen === Screen.Clear ? (
+                        <Clear  selectedMarkerId={selectedMarkerId}/>
                     ) : null
                 }
             </View>
