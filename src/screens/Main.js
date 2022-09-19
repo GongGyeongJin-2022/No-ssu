@@ -51,6 +51,9 @@ const Main = ({ navigation }) => {
                     }
                 }
             })
+
+        bottomSheetModalRef.current?.present();
+        setScreen(Screen.Complete)
     }, []);
 
     // 화면이 메인화면으로 바뀌면 현재 위치설정하고, 마커들 요청함

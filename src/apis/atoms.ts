@@ -20,6 +20,7 @@ export const Screen = {
     Upload: 'Upload',
     Mypage: 'Mypage',
     Pin: 'Pin',
+    Complete: 'Complete',
     None: ''
 } as const;
 type Screen = typeof Screen[keyof typeof Screen];
