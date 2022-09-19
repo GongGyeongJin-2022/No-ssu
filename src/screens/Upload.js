@@ -131,11 +131,11 @@ const Upload = () => {
     const uploadMarker = () => {
         console.log("upload");
 
-        if(!images) {
+        if(images.length < 2) {
             Toast.show({
                 type: 'error',
                 text1: '등록 실패',
-                text2: '이미지를 촬영해주세요',
+                text2: '이미지를 2장 이상 촬영해주세요',
             });
             return;
         }
