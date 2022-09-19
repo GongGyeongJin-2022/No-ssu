@@ -181,7 +181,7 @@ const MyPage = () => {
 
             <View style={styles.infoContainer}>
                 <View style={{display: 'flex', flexDirection: 'row'}}>
-                    <View style={styles.profileImage}></View>
+                    <Image style={styles.profileImage} source={require('@assets/img/ProfileImg.jpg')}/>
                     <View style={styles.info}>
                         <Text style={styles.name}>{user?.first_name}</Text>
                         <View style={styles.point}>
