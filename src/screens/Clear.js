@@ -4,8 +4,7 @@ import {Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-
 import { vw, vh } from 'react-native-css-vh-vw';
 import {getMarkerDetail, getTag, postClear, postMarker, URL} from "@apis/apiServices";
 import {useApi} from "@hooks/Hooks";
-import ImageModal from "react-native-image-modal";
-import Carousel from "react-native-reanimated-carousel";
+import Icon from 'react-native-vector-icons/AntDesign';
 import {ImageCarousel} from "@components/ImageCarousel";
 import {Screen, screenState} from "@apis/atoms";
 import {useSetRecoilState} from "recoil";
@@ -77,7 +76,7 @@ const Clear = ({detailLoading, detailResolved, getDetail, selectedMarkerId}) => 
                     <>
 
                         <ImageCarousel images={detailResolved.images.map(image => URL+image)} setImages={setImages} capture={false} pagingEnabled={false}/>
-                        <Text style={styles.arrow}>비교</Text>
+                        <Icon style={styles.compare} name="swap" size={40} color="black" />
                         <ImageCarousel images={images} setImages={setImages} capture={true}/>
                         <View style={styles.content}>
                             <View style={styles.tagContainer}>
@@ -162,8 +161,10 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold'
     },
-    arrow: {
-        alignSelf: 'center'
+    compare: {
+        alignSelf: 'center',
+        marginVertical: -18,
+        transform: [{ rotate: "90deg" }]
     },
     description: {
         margin: 24
