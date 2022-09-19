@@ -113,20 +113,6 @@ const Upload = () => {
         })
     }
 
-    const imagePicker = () => {
-        ImagePicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: true,
-            includeExif: true,
-            mediaType: 'photo',
-        }).then(image => {
-            console.log(image);
-            setImages(prev => [...prev, image.path]);
-            setGeoLocation();
-        });
-    }
-
     const uploadMarker = () => {
         console.log("upload");
 
@@ -149,12 +135,6 @@ const Upload = () => {
             });
         })
 
-        // formData.append("image", {
-        //     uri: "file:///storage/emulated/0/Android/data/com.no_ssu/files/Pictures/512524b6-57eb-488a-8b69-6ac3b1cccd15.jpg",
-        //     type: 'image/jpeg',
-        //     name: `addressimage.jpg`
-        // });
-
         formData.append("reward_reward", reward); // TODO: reward를 사용자의 point를 초과하여 업로드할수 없게 안전장치 필요
         formData.append("longitude", location.longitude);
         formData.append("latitude", location.latitude);
@@ -168,11 +148,7 @@ const Upload = () => {
             }
         })
 
-        // formData.append("tag",1);
-        // formData.append("posted_user",1)
-
         console.log(sizes)
-
         sizes.forEach((size, idx) => {
             if(size.selected) {
                 formData.append("size", size.code);
@@ -225,8 +201,8 @@ const Upload = () => {
                     </View>
                 ) : (
                     <>
+                        <ImageCarousel images={images} setImages={setImages} capture={true} callback={setGeoLocation}/>
                         <View style={styles.container}>
-                            <ImageCarousel images={images} setImages={setImages} capture={true} callback={setGeoLocation}/>
 
                             <Text style={styles.label}>태그</Text>
                             <View style={styles.tag}>
@@ -308,6 +284,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     container: {
+        marginTop: -40,
         padding: 12,
     },
     imagePickerButton: {
