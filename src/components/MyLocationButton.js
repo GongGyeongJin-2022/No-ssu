@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
         shadowRadius: 2.22,
         elevation: 3,
         bottom: 50,
-        left: 15
+        left: 25
     },
     locationActiveIcon: {
         shadowColor: "#4efafa",

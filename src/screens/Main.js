@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Image, View } from "react-native";
+import { vh } from "react-native-css-vh-vw";
 
 import NaverMapView from "react-native-nmap";
 import { FloatingButton } from "@components/FloatingButton";
 import Geolocation from '@react-native-community/geolocation';
 import { Marker } from "react-native-nmap";
-import {useApi, useBottomSheetModalRef, useInterval} from "@hooks/Hooks.js";
+import { useApi, useBottomSheetModalRef, useInterval } from "@hooks/Hooks.js";
 import MyLocationPin from "@components/MyLocationPin";
 import MyLocationButton from "../components/MyLocationButton";
 
 import BottomSheet from "@components/BottomSheet";
-import {useRecoilState, useSetRecoilState} from "recoil";
+import { useRecoilState } from "recoil";
 import { screenState, Screen, userState } from "@apis/atoms";
 import { getMarkersSimiple, getUser, verifyFCM } from "@apis/apiServices";
 import messaging from "@react-native-firebase/messaging";
@@ -97,6 +98,8 @@ const Main = ({ navigation }) => {
                 showsMyLocationButton={false}
                 center={{latitude: parseFloat(location.latitude), longitude: parseFloat(location.longitude)}}
                 setLocationTrackingMode={3}
+                logoMargin={{top: vh(200), left: 0, bottom: 0, right: 0}}
+                scaleBar={false}
                 useTextureView={true}
             >
                 {
@@ -113,16 +116,23 @@ const Main = ({ navigation }) => {
                 }
 
                 {
-                        !markersLoading && markers.map((marker, idx) => (
+                    !markersLoading && markers.map((marker, idx) => (
                         <Marker
                             key={idx}
+                            width={60}
+                            height={60}
                             coordinate={{latitude: parseFloat(marker.latitude), longitude: parseFloat(marker.longitude)}}
                             onClick={async () => {
                                 setSelectedMarkerId(marker.id);
                                 bottomSheetModalRef.current?.present();
                                 setScreen(Screen.Pin);
                             }}
-                        />
+                        >
+                            <Image
+                                source={require('@assets/img/marker_green.png')}
+                                style={{width: 60, height: 60}}
+                            />
+                        </Marker>
                     ))
                 }
 
