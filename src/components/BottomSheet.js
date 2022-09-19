@@ -49,6 +49,8 @@ const BottomSheet = ({selectedMarkerId}) => {
                 setScreen(Screen.None);
             }}
             enableOverDrag={false}
+            activeOffsetX={[-999, 999]}
+            activeOffsetY={[-5, 5]}
         >
             <View>
                 {

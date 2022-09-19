@@ -9,6 +9,7 @@ import {ImageCarousel} from "@components/ImageCarousel";
 import {Screen, screenState} from "@apis/atoms";
 import {useSetRecoilState} from "recoil";
 import Toast from "react-native-toast-message";
+import {Tags} from "@components/Tags";
 
 const sizes = {
     "L": "대형",
@@ -78,19 +79,11 @@ const Clear = ({detailLoading, detailResolved, getDetail, selectedMarkerId}) => 
                         <ImageCarousel images={detailResolved.images.map(image => URL+image)} setImages={setImages} capture={false} pagingEnabled={false}/>
                         <Icon style={styles.compare} name="swap" size={40} color="black" />
                         <ImageCarousel images={images} setImages={setImages} capture={true}/>
+
+                        <View style={styles.tagContainer}>
+                            <Tags tags={detailResolved.tags} sizes={detailResolved.size}/>
+                        </View>
                         <View style={styles.content}>
-                            <View style={styles.tagContainer}>
-                                {
-                                    detailResolved.tags.map((tagNum, idx) => (
-                                        <View key={"tag"+idx}style={styles.tag}>
-                                            <Text style={styles.tagText}>#{tagResolved[tagNum-1].name}</Text>
-                                        </View>
-                                    ))
-                                }
-                                <View style={styles.tag}>
-                                    <Text style={styles.tagText}>#{sizes[detailResolved.size]}</Text>
-                                </View>
-                            </View>
                             <Text style={styles.description}>{detailResolved.explanation}</Text>
                             <View style={styles.commentContainer}>
                                 <TextInput style={styles.explanation} placeholder={"작성자님께 전달할 내용을 작성해주세요!"} onChangeText={setExplanation} value={explanation}/>
@@ -124,21 +117,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         width: '100%'
-    },
-    tag: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: 76,
-        height: 24,
-        borderWidth: 1,
-        borderColor: '#C8C8C8',
-        borderRadius: 50,
-        marginHorizontal: 3
-    },
-    tagText: {
-        fontSize: 10,
-        color: '#252525'
     },
     descriptionText: {
         color: '#252525',

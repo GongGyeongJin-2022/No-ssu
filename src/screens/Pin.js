@@ -4,17 +4,11 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import { vw, vh } from 'react-native-css-vh-vw';
 import {getMarkerDetail, getTag} from "@apis/apiServices";
 import {useApi, useBottomSheetModalRef} from "@hooks/Hooks";
-import Carousel from "react-native-reanimated-carousel";
 import {useSetRecoilState} from "recoil";
 import {Screen, screenState} from "@apis/atoms";
 import {URL} from "@apis/apiServices";
 import {ImageCarousel} from "@components/ImageCarousel";
-
-const sizes = {
-    "L": "대형",
-    "M": "중형",
-    "S": "소형"
-}
+import {Tags} from "@components/Tags";
 
 const Pin = ({detailLoading, detailResolved, getDetail, selectedMarkerId}) => {
 
@@ -38,20 +32,11 @@ const Pin = ({detailLoading, detailResolved, getDetail, selectedMarkerId}) => {
             <>
 
                 <ImageCarousel images={detailResolved.images.map(image => URL+image)} capture={false}/>
-                <View style={styles.content}>
-                    <View style={styles.tagContainer}>
-                        {
-                            detailResolved.tags.map((tagNum, idx) => (
-                                <View key={"tag"+idx}style={styles.tag}>
-                                    <Text style={styles.tagText}>#{tagResolved[tagNum-1].name}</Text>
-                                </View>
-                            ))
-                        }
-                        <View style={styles.tag}>
-                            <Text style={styles.tagText}>#{sizes[detailResolved.size]}</Text>
-                        </View>
-                    </View>
 
+                    <View style={styles.tagContainer}>
+                       <Tags tags={detailResolved.tags} sizes={detailResolved.size}/>
+                    </View>
+                <View style={styles.content}>
                     <Text style={styles.descriptionText}>{detailResolved.explanation}</Text>
                 </View>
 
@@ -85,26 +70,11 @@ const styles = StyleSheet.create({
     tagContainer: {
         display: 'flex',
         flexDirection: 'row',
-        width: '100%'
-    },
-    tag: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: 76,
-        height: 24,
-        borderWidth: 1,
-        borderColor: '#C8C8C8',
-        borderRadius: 50,
-        marginHorizontal: 3
-    },
-    tagText: {
-        fontSize: 10,
-        color: '#252525'
+        width: '100%',
+        marginTop: -24,
     },
     descriptionText: {
-        color: '#252525',
-        marginTop: 12
+        color: '#252525'
     },
     clearButton: {
         display: 'flex',
