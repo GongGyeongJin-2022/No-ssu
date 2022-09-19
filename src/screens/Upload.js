@@ -158,7 +158,6 @@ const Upload = () => {
         formData.append("reward_reward", reward); // TODO: reward를 사용자의 point를 초과하여 업로드할수 없게 안전장치 필요
         formData.append("longitude", location.longitude);
         formData.append("latitude", location.latitude);
-        formData.append("status", "W")
 
         formData.append("explanation", comment);
 
@@ -275,7 +274,7 @@ const Upload = () => {
                                     ))
                                 }
                             </View>
-                            <Text style={styles.label}>코멘트</Text>
+                            <Text style={styles.label}>요청 사항</Text>
                             <View style={styles.commentContainer}>
                                 <TextInput style={styles.comment} onChangeText={setComment} value={comment}/>
                             </View>
@@ -321,12 +320,6 @@ const styles = StyleSheet.create({
     },
     imagePickerText: {
         alignSelf: 'center'
-    },
-    image: {
-        alignSelf: 'center',
-        width: vw(90),
-        height: vh(30),
-        // borderRadius: 10
     },
     tag: {
         alignSelf: "stretch",
