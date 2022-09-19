@@ -50,7 +50,7 @@ export const ImageCarousel = ({images, setImages, capture, callback, pagingEnabl
         <Carousel
             loop={false}
             width={vw(100)}
-            height={vh(30)}
+            height={vw(100*9/16)}
             snapEnabled={pagingEnabled}
             data={capture ? [...images, 0] : [...images]}
             mode="parallax"

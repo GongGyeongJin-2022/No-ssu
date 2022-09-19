@@ -63,7 +63,7 @@ const BottomSheet = ({selectedMarkerId}) => {
                     ) : screen === Screen.Pin ? (
                         <Pin detailLoading={detailLoading} detailResolved={detailResolved} getDetail={getDetail} selectedMarkerId={selectedMarkerId}/>
                     ) : screen === Screen.Clear ? (
-                        <Clear detailLoading={detailLoading} detailResolved={detailResolved} getDetail={getDetail}/>
+                        <Clear detailLoading={detailLoading} detailResolved={detailResolved} getDetail={getDetail} selectedMarkerId={selectedMarkerId}/>
                     ) : null
                 }
             </View>

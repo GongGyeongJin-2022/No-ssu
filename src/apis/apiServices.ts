@@ -101,3 +101,15 @@ export const verifyFCM = (authHeader:any, body: any):Promise<AxiosResponse> => {
         }
     )
 }
+
+export const postClear = (authHeader:any, body:any):any => {
+    return axios.post(
+        `${URL}/api/clear/`,
+        body, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                ...authHeader
+            }
+        }
+    );
+}
