@@ -11,7 +11,7 @@ import {
     FlatList,
     TextInput,
     TouchableHighlight,
-    Dimensions, ScrollView, SafeAreaView
+    Dimensions, ScrollView, SafeAreaView, ActivityIndicator
 } from 'react-native';
 import * as ImagePicker from "react-native-image-crop-picker";
 import MotionSlider from 'react-native-motion-slider';
@@ -51,6 +51,7 @@ const Upload = () => {
     const [reward, setReward] = useState(10);
     const [markerLoading, markerResolved, callApi] = useApi(postMarker, true);
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
+    const [loading, setLoading] = useState(false);
 
     const setScreen = useSetRecoilState(screenState);
 
@@ -113,23 +114,8 @@ const Upload = () => {
         })
     }
 
-    const imagePicker = () => {
-        ImagePicker.openCamera({
-            width: 300,
-            height: 400,
-            cropping: true,
-            includeExif: true,
-            mediaType: 'photo',
-        }).then(image => {
-            console.log(image);
-            setImages(prev => [...prev, image.path]);
-            setGeoLocation();
-        });
-    }
-
     const uploadMarker = () => {
         console.log("upload");
-
         if(images.length < 2) {
             Toast.show({
                 type: 'error',
@@ -149,12 +135,6 @@ const Upload = () => {
             });
         })
 
-        // formData.append("image", {
-        //     uri: "file:///storage/emulated/0/Android/data/com.no_ssu/files/Pictures/512524b6-57eb-488a-8b69-6ac3b1cccd15.jpg",
-        //     type: 'image/jpeg',
-        //     name: `addressimage.jpg`
-        // });
-
         formData.append("reward_reward", reward); // TODO: reward를 사용자의 point를 초과하여 업로드할수 없게 안전장치 필요
         formData.append("longitude", location.longitude);
         formData.append("latitude", location.latitude);
@@ -168,11 +148,7 @@ const Upload = () => {
             }
         })
 
-        // formData.append("tag",1);
-        // formData.append("posted_user",1)
-
         console.log(sizes)
-
         sizes.forEach((size, idx) => {
             if(size.selected) {
                 formData.append("size", size.code);
@@ -195,6 +171,7 @@ const Upload = () => {
             });
             return;
         }
+        setLoading(true);
 
         callApi(formData)
             .then(res=>{console.log("res",res)})
@@ -211,7 +188,11 @@ const Upload = () => {
                     text1: '등록 실패',
                     text2: 'API호출중 에러가 발생했습니다.',
                 });
+            })
+            .finally(() => {
+                setLoading(false);
             });
+
     }
 
     return (
@@ -225,8 +206,8 @@ const Upload = () => {
                     </View>
                 ) : (
                     <>
+                        <ImageCarousel images={images} setImages={setImages} capture={true} callback={setGeoLocation}/>
                         <View style={styles.container}>
-                            <ImageCarousel images={images} setImages={setImages} capture={true} callback={setGeoLocation}/>
 
                             <Text style={styles.label}>태그</Text>
                             <View style={styles.tag}>
@@ -293,6 +274,9 @@ const Upload = () => {
                         </View>
                         <TouchableOpacity style={styles.submitButton} onPress={uploadMarker}>
                             <Text style={styles.submitButtonText}>치워주세요!</Text>
+                            {
+                                loading && <ActivityIndicator style={styles.loadingIndicator} size="small" color="#ffffff" />
+                            }
                         </TouchableOpacity>
                     </>
                 )
@@ -308,6 +292,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between'
     },
     container: {
+        marginTop: -40,
         padding: 12,
     },
     imagePickerButton: {
@@ -372,6 +357,7 @@ const styles = StyleSheet.create({
 
     },
     submitButton: {
+        flexDirection: "row",
         justifyContent: 'center',
         alignItems: 'center',
         height: vh(6),
@@ -382,6 +368,10 @@ const styles = StyleSheet.create({
     submitButtonText: {
         color: 'white',
         fontWeight: 'bold'
+    },
+    loadingIndicator: {
+        position: "absolute",
+        right: 20
     }
 })
 

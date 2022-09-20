@@ -3,10 +3,12 @@ import { Text, View, StyleSheet, TouchableHighlight, Image } from "react-native"
 import { vh, vw } from "react-native-css-vh-vw";
 import NaverMapView, { Marker } from "react-native-nmap";
 import { ScrollView } from "react-native-gesture-handler";
-import { useApi } from "@hooks/Hooks";
+import {useApi, useBottomSheetModalRef} from "@hooks/Hooks";
 import { getMarkersSimiple, getUser, postChargePoint } from "@apis/apiServices";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import { BootpayWebView } from 'react-native-bootpay';
+import {useRecoilState} from "recoil";
+import {tokenState} from "@apis/atoms";
 
 const LogItem = () => {
     return (
@@ -43,13 +45,15 @@ const LogItem = () => {
     );
 }
 
-const MyPage = () => {
+const MyPage = ({navigation}) => {
     const [markersLoading, markers, getMarkersSimpleCallback] = useApi(getMarkersSimiple, true);
     const [userLoading, user, getUserCallback] = useApi(getUser, true);
     const [chargeLoading, charge, postChargePointCallback] = useApi(postChargePoint, true);
+    const [token, setToken] = useRecoilState(tokenState);
 
     const [activityMapCenter, setActivityMapCenter] = useState({latitude: 37.5666102, longitude: 126.9783881, zoom: 10});
 
+    const bottomSheetModalRef = useBottomSheetModalRef()
     const bootpay = useRef(null);
 
     useEffect(() => {
@@ -86,6 +90,15 @@ const MyPage = () => {
                 setActivityMapCenter({latitude: rad2degr(lat), longitude: rad2degr(lng), zoom: 10});
             })
     }, []);
+
+    const logout = () => {
+        setToken({
+            accessToken: "",
+            refreshToken: ""
+        });
+        navigation.navigate("Login");
+        bottomSheetModalRef.current?.close();
+    }
 
     const handleDeposit = () => {
         const payload = {
@@ -181,7 +194,7 @@ const MyPage = () => {
 
             <View style={styles.infoContainer}>
                 <View style={{display: 'flex', flexDirection: 'row'}}>
-                    <View style={styles.profileImage}></View>
+                    <Image style={styles.profileImage} source={require('@assets/img/ProfileImg.jpg')}/>
                     <View style={styles.info}>
                         <Text style={styles.name}>{user?.first_name}</Text>
                         <View style={styles.point}>
@@ -261,7 +274,7 @@ const MyPage = () => {
                 </View>
             </View>
 
-            <TouchableHighlight style={styles.logoutButton}>
+            <TouchableHighlight style={styles.logoutButton} onPress={logout}>
                 <Text style={{color: 'white', fontWeight: 'bold', textAlign: 'center'}}> 로그아웃 </Text>
             </TouchableHighlight>
         </ScrollView>

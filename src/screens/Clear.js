@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
+import {ActivityIndicator, Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
 
 import { vw, vh } from 'react-native-css-vh-vw';
 import {getMarkerDetail, getTag, postClear, postMarker, URL} from "@apis/apiServices";
@@ -9,17 +9,13 @@ import {ImageCarousel} from "@components/ImageCarousel";
 import {Screen, screenState} from "@apis/atoms";
 import {useSetRecoilState} from "recoil";
 import Toast from "react-native-toast-message";
-
-const sizes = {
-    "L": "대형",
-    "M": "중형",
-    "S": "소형"
-}
+import {Tags} from "@components/Tags";
 
 const Clear = ({detailLoading, detailResolved, getDetail, selectedMarkerId}) => {
     const [tagLoading, tagResolved, tagApi] = useApi(getTag, true);
     const [clearLoading, clearResolved, callClear] = useApi(postClear, true);
     const [explanation, setExplanation] = useState("");
+    const [loading, setLoading] = useState(false);
     const setScreen = useSetRecoilState(screenState);
 
     const [images, setImages] = useState([])
@@ -47,6 +43,8 @@ const Clear = ({detailLoading, detailResolved, getDetail, selectedMarkerId}) => 
                     name: `clearimage${idx}.jpg`
                 });
             })
+
+            setLoading(true);
             callClear(formData)
                 .then(() => {
                     Toast.show({
@@ -61,7 +59,10 @@ const Clear = ({detailLoading, detailResolved, getDetail, selectedMarkerId}) => 
                         text1: '등록 실패',
                         text2: 'API호출중 에러가 발생했습니다.',
                     });
-                });
+                })
+                .finally(() => {
+                    setLoading(false);
+                })
         }
     }
 
@@ -78,19 +79,11 @@ const Clear = ({detailLoading, detailResolved, getDetail, selectedMarkerId}) => 
                         <ImageCarousel images={detailResolved.images.map(image => URL+image)} setImages={setImages} capture={false} pagingEnabled={false}/>
                         <Icon style={styles.compare} name="swap" size={40} color="black" />
                         <ImageCarousel images={images} setImages={setImages} capture={true}/>
+
+                        <View style={styles.tagContainer}>
+                            <Tags tags={detailResolved.tags} sizes={detailResolved.size}/>
+                        </View>
                         <View style={styles.content}>
-                            <View style={styles.tagContainer}>
-                                {
-                                    detailResolved.tags.map((tagNum, idx) => (
-                                        <View key={"tag"+idx}style={styles.tag}>
-                                            <Text style={styles.tagText}>#{tagResolved[tagNum-1].name}</Text>
-                                        </View>
-                                    ))
-                                }
-                                <View style={styles.tag}>
-                                    <Text style={styles.tagText}>#{sizes[detailResolved.size]}</Text>
-                                </View>
-                            </View>
                             <Text style={styles.description}>{detailResolved.explanation}</Text>
                             <View style={styles.commentContainer}>
                                 <TextInput style={styles.explanation} placeholder={"작성자님께 전달할 내용을 작성해주세요!"} onChangeText={setExplanation} value={explanation}/>
@@ -100,6 +93,9 @@ const Clear = ({detailLoading, detailResolved, getDetail, selectedMarkerId}) => 
                 )}
             <TouchableOpacity style={styles.clearButton} onPress={submitClear}>
                 <Text style={styles.clearButtonText}>확인해주세요!</Text>
+                {
+                    loading && <ActivityIndicator style={styles.loadingIndicator} size="small" color="#ffffff" />
+                }
             </TouchableOpacity>
         </View>
     );
@@ -124,21 +120,6 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row',
         width: '100%'
-    },
-    tag: {
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: 76,
-        height: 24,
-        borderWidth: 1,
-        borderColor: '#C8C8C8',
-        borderRadius: 50,
-        marginHorizontal: 3
-    },
-    tagText: {
-        fontSize: 10,
-        color: '#252525'
     },
     descriptionText: {
         color: '#252525',
@@ -185,6 +166,10 @@ const styles = StyleSheet.create({
         borderColor: "lightgray",
         borderRadius: 10
     },
+    loadingIndicator: {
+        position: "absolute",
+        right: 20
+    }
 });
 
 export default Clear;

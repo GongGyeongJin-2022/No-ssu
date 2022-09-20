@@ -13,6 +13,7 @@ import Clear from "@screens/Clear";
 import {getMarkerDetail} from "@apis/apiServices";
 
 const BottomSheet = ({
+    navigation,
     selectedMarkerId,
     completeId
 }) => {
@@ -54,6 +55,8 @@ const BottomSheet = ({
                 setScreen(Screen.None);
             }}
             enableOverDrag={false}
+            activeOffsetX={[-999, 999]}
+            activeOffsetY={[-5, 5]}
         >
             <View>
                 {
@@ -64,7 +67,7 @@ const BottomSheet = ({
                     ) : screen === Screen.Upload ? (
                         <Upload />
                     ) : screen === Screen.Mypage ? (
-                        <MyPage />
+                        <MyPage navigation={navigation}/>
                     ) : screen === Screen.Pin ? (
                         <Pin detailLoading={detailLoading} detailResolved={detailResolved} getDetail={getDetail} selectedMarkerId={selectedMarkerId}/>
                     ) : screen === Screen.Clear ? (
