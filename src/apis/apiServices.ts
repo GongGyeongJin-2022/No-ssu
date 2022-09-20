@@ -145,3 +145,15 @@ export const getMarkerWaitingDetail = (authHeader:any, id: any):Promise<AxiosRes
         }
     )
 }
+
+export const postMarkerWaiting = (authHeader:any, body:any):any => {
+    return axios.post(
+        `${URL}/api/marker-waiting/`,
+        body, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+                ...authHeader
+            }
+        }
+    );
+}

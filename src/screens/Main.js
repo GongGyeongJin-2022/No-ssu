@@ -65,9 +65,12 @@ const Main = ({ navigation }) => {
                         bottomSheetModalRef.current?.present();
                         setScreen(Screen.Complete);
                     }
+                    else {
+                        setScreen(Screen.Main);
+                    }
                 }
             })
-    }, [userLoading]);
+    }, [completeId]);
 
     // 화면이 메인화면으로 바뀌면 현재 위치설정하고, 마커들 요청함
     useEffect(() => {
@@ -112,6 +115,7 @@ const Main = ({ navigation }) => {
                 navigation={navigation}
                 selectedMarkerId={selectedMarkerId}
                 completeId={completeId}
+                setCompleteId={setCompleteId}
             />
             <NaverMapView
                 style={{width: '100%', height: '100%'}}
