@@ -10,6 +10,7 @@ import { BootpayWebView } from 'react-native-bootpay';
 import {useRecoilState} from "recoil";
 import {tokenState} from "@apis/atoms";
 import moment from 'moment';
+import {CustomMarker} from "@components/CustomMarker";
 
 const LogItem = ({log}) => {
     return (
@@ -249,10 +250,7 @@ const MyPage = ({navigation}) => {
                                         height={60}
                                         coordinate={{latitude: parseFloat(marker.latitude), longitude: parseFloat(marker.longitude)}}
                                     >
-                                        <Image
-                                            source={require('@assets/img/marker_green.png')}
-                                            style={{width: 60, height: 60}}
-                                        />
+                                        <CustomMarker marker={marker} zoom={1}/>
                                     </Marker>
                                 ))
                             }
@@ -439,7 +437,7 @@ const styles = StyleSheet.create({
         padding: 5,
         width: vw(100),
         height: 40,
-        marginTop: vh(5),
+        marginTop: vh(12),
     },
 });
 
