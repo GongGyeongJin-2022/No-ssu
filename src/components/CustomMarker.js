@@ -5,10 +5,17 @@ export const CustomMarker = ({marker, zoom}) => {
     return (
         <View style={styles.container}>
             {zoom > 8 && <Text style={styles.reward}>{marker.reward}P</Text>}
-            <Image
-                source={require('@assets/img/marker_green.png')}
-                style={styles.marker}
-            />
+            {
+                marker.status === 'U' ?
+                    <Image
+                        source={require('@assets/img/marker_waiting.png')}
+                        style={styles.marker}
+                    /> :
+                    <Image
+                        source={require('@assets/img/marker_approved_yet.png')}
+                        style={styles.marker}
+                    />
+            }
         </View>
 
     )
