@@ -127,3 +127,21 @@ export const postChargePoint = (authHeader:any, body: any):Promise<AxiosResponse
         }
     )
 }
+
+export const getMarkerWaiting = (authHeader:any):Promise<AxiosResponse> => {
+    return axios.get(
+        `${URL}/api/marker-waiting`,
+        {
+            headers: authHeader
+        }
+    )
+}
+
+export const getMarkerWaitingDetail = (authHeader:any, id: any):Promise<AxiosResponse> => {
+    return axios.get(
+        `${URL}/api/marker-waiting/${id}`,
+        {
+            headers: authHeader
+        }
+    )
+}

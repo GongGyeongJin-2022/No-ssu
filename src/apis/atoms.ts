@@ -20,6 +20,7 @@ export const Screen = {
     Upload: 'Upload',
     Mypage: 'Mypage',
     Pin: 'Pin',
+    Complete: 'Complete',
     Clear: 'Clear',
     None: ''
 } as const;
