@@ -9,6 +9,7 @@ import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import { BootpayWebView } from 'react-native-bootpay';
 import {useRecoilState} from "recoil";
 import {tokenState} from "@apis/atoms";
+import moment from 'moment';
 
 const LogItem = ({log}) => {
     return (
@@ -27,7 +28,7 @@ const LogItem = ({log}) => {
                     </NaverMapView>
                 </View>
                 <View style={styles.logItemInfo}>
-                    <Text style={{fontSize: 17, fontWeight: '400', color: 'black'}}>2022.07.25 12시 13분</Text>
+                    <Text style={{fontSize: 17, fontWeight: '400', color: 'black'}}>{moment(log.created_at).format('YYYY.MM.DD HH시 mm분')}</Text>
                     <View style={styles.logItemPostedUser}>
                         <Text style={{marginRight: 10, color: 'black'}}>의뢰인</Text>
                         <Text>{log.posted_user}</Text>
@@ -38,7 +39,7 @@ const LogItem = ({log}) => {
                     </View>
                 </View>
                 <View style={styles.pointContainer}>
-                    <Text style={{fontSize: 12, color: '#93CE92'}}>+ 1000</Text>
+                    <Text style={{fontSize: 12, color: '#93CE92'}}>+ {log.reward}</Text>
                 </View>
             </View>
         </View>
