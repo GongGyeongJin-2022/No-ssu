@@ -11,7 +11,7 @@ import Upload from "@screens/Upload";
 import Clear from "@screens/Clear";
 import {getMarkerDetail} from "@apis/apiServices";
 
-const BottomSheet = ({selectedMarkerId}) => {
+const BottomSheet = ({navigation, selectedMarkerId}) => {
     const [screen, setScreen] = useRecoilState(screenState)
     const bottomSheetModalRef = useBottomSheetModalRef();
     const [detailLoading, detailResolved, getDetail] = useApi(getMarkerDetail, true);
@@ -61,7 +61,7 @@ const BottomSheet = ({selectedMarkerId}) => {
                     ) : screen === Screen.Upload ? (
                         <Upload />
                     ) : screen === Screen.Mypage ? (
-                        <MyPage />
+                        <MyPage navigation={navigation}/>
                     ) : screen === Screen.Pin ? (
                         <Pin detailLoading={detailLoading} detailResolved={detailResolved} getDetail={getDetail} selectedMarkerId={selectedMarkerId}/>
                     ) : screen === Screen.Clear ? (
