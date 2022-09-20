@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import { Image, View } from "react-native";
 import { vh } from "react-native-css-vh-vw";
 
@@ -15,6 +15,7 @@ import { useRecoilState } from "recoil";
 import { screenState, Screen, userState } from "@apis/atoms";
 import { getMarkersSimiple, getUser, verifyFCM } from "@apis/apiServices";
 import messaging from "@react-native-firebase/messaging";
+import {UMarker} from "@components/Marker";
 
 const Main = ({ navigation }) => {
     const [screen, setScreen] = useRecoilState(screenState);
@@ -25,7 +26,7 @@ const Main = ({ navigation }) => {
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
     const [selectedMarkerId, setSelectedMarkerId] = useState();
-
+    const [cameraZoom, setCameraZoom] = useState();
 
     // api
     const [markersLoading, markers, getMarkersSimpleCallback] = useApi(getMarkersSimiple, true);
@@ -67,7 +68,7 @@ const Main = ({ navigation }) => {
         }
     }, 1000);
 
-    const setGeoLocation = () => {
+    const setGeoLocation = useCallback(() => {
         Geolocation.getCurrentPosition(
             (position) => {
                 console.log(position);
@@ -81,7 +82,7 @@ const Main = ({ navigation }) => {
             },
             { enableHighAccuracy: false, timeout: 15000, maximumAge: 10000 }
         );
-    }
+    },[])
 
     useEffect(() => {
         if(!markersLoading) {
@@ -101,6 +102,9 @@ const Main = ({ navigation }) => {
                 logoMargin={{top: vh(200), left: 0, bottom: 0, right: 0}}
                 scaleBar={false}
                 useTextureView={true}
+                onCameraChange={(e) => {
+                    setCameraZoom(e.zoom);
+                }}
             >
                 {
                     // 현 위치를 표시해주는 마커
@@ -128,10 +132,7 @@ const Main = ({ navigation }) => {
                                 setScreen(Screen.Pin);
                             }}
                         >
-                            <Image
-                                source={require('@assets/img/marker_green.png')}
-                                style={{width: 60, height: 60}}
-                            />
+                            <UMarker marker={marker} zoom={cameraZoom}/>
                         </Marker>
                     ))
                 }
