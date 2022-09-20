@@ -12,7 +12,10 @@ import Complete from "@screens/Complete";
 import Clear from "@screens/Clear";
 import {getMarkerDetail} from "@apis/apiServices";
 
-const BottomSheet = ({selectedMarkerId}) => {
+const BottomSheet = ({
+    selectedMarkerId,
+    completeId
+}) => {
     const [screen, setScreen] = useRecoilState(screenState)
     const bottomSheetModalRef = useBottomSheetModalRef();
     const [detailLoading, detailResolved, getDetail] = useApi(getMarkerDetail, true);
@@ -67,7 +70,7 @@ const BottomSheet = ({selectedMarkerId}) => {
                     ) : screen === Screen.Clear ? (
                         <Clear detailLoading={detailLoading} detailResolved={detailResolved} getDetail={getDetail} selectedMarkerId={selectedMarkerId}/>
                     ) : screen === Screen.Complete ? (
-                        <Complete />
+                        <Complete id={completeId} />
                     ) : null
                 }
             </View>

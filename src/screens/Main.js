@@ -13,7 +13,7 @@ import MyLocationButton from "../components/MyLocationButton";
 import BottomSheet from "@components/BottomSheet";
 import { useRecoilState } from "recoil";
 import { screenState, Screen, userState } from "@apis/atoms";
-import { getMarkersSimiple, getUser, verifyFCM } from "@apis/apiServices";
+import { getMarkersSimiple, getMarkerWaiting, getUser, verifyFCM } from "@apis/apiServices";
 import messaging from "@react-native-firebase/messaging";
 
 const Main = ({ navigation }) => {
@@ -25,12 +25,14 @@ const Main = ({ navigation }) => {
     const [location, setLocation] = useState({latitude: 37.5828, longitude: 127.0107});
     const [findLocation, setFindLocation] = useState(false);
     const [selectedMarkerId, setSelectedMarkerId] = useState();
+    const [completeId, setCompleteId] = useState();
 
 
     // api
     const [markersLoading, markers, getMarkersSimpleCallback] = useApi(getMarkersSimiple, true);
     const [userLoading, userResult, getUserCallback] = useApi(getUser, true);
     const [verifyFCMLoading, verifyFCMResult, verifyFCMCallback] = useApi(verifyFCM, true);
+    const [markerWaitingLoading, markerWaiting, getMarkerWaitingCallback] = useApi(getMarkerWaiting, true);
 
     useEffect(() => {
         getUserCallback()
@@ -51,10 +53,20 @@ const Main = ({ navigation }) => {
                     }
                 }
             })
-
-        bottomSheetModalRef.current?.present();
-        setScreen(Screen.Complete)
     }, []);
+
+    useEffect(() => {
+        getMarkerWaitingCallback()
+            .then((res) => {
+                if (res) {
+                    if (res.length > 0) {
+                        setCompleteId(res[0].id);
+                        bottomSheetModalRef.current?.present();
+                        setScreen(Screen.Complete);
+                    }
+                }
+            })
+    }, [userLoading]);
 
     // 화면이 메인화면으로 바뀌면 현재 위치설정하고, 마커들 요청함
     useEffect(() => {
@@ -95,7 +107,7 @@ const Main = ({ navigation }) => {
 
     return (
         <View>
-            <BottomSheet selectedMarkerId={selectedMarkerId}/>
+            <BottomSheet selectedMarkerId={selectedMarkerId} completeId={completeId}/>
             <NaverMapView
                 style={{width: '100%', height: '100%'}}
                 showsMyLocationButton={false}
