@@ -15,7 +15,8 @@ import {getMarkerDetail} from "@apis/apiServices";
 const BottomSheet = ({
     navigation,
     selectedMarkerId,
-    completeId
+    completeId,
+    setCompleteId,
 }) => {
     const [screen, setScreen] = useRecoilState(screenState)
     const bottomSheetModalRef = useBottomSheetModalRef();
@@ -73,7 +74,7 @@ const BottomSheet = ({
                     ) : screen === Screen.Clear ? (
                         <Clear detailLoading={detailLoading} detailResolved={detailResolved} getDetail={getDetail} selectedMarkerId={selectedMarkerId}/>
                     ) : screen === Screen.Complete ? (
-                        <Complete id={completeId} />
+                        <Complete completeId={completeId} setCompleteId={setCompleteId} />
                     ) : null
                 }
             </View>

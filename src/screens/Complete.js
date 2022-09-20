@@ -1,23 +1,36 @@
 import React, { useEffect } from "react";
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Carousel from "react-native-reanimated-carousel/src/Carousel";
 import { vh, vw } from "react-native-css-vh-vw";
 import { useApi } from "@hooks/Hooks";
-import { getMarkerWaitingDetail, URL } from "@apis/apiServices";
+import { getMarkerWaitingDetail, postMarkerWaiting, URL } from "@apis/apiServices";
 
 const Complete = ({
-    id
+    completeId,
+    setCompleteId,
 }) => {
     const [markerWaitingDetailLoading, markerWaitingDetail, getMarkerWaitingDetailCallback] = useApi(getMarkerWaitingDetail, true);
+    const [postMarkerWaitingLoading, postMarkerWaitingRes, postMarkerWaitingCallback] = useApi(postMarkerWaiting, true);
 
     useEffect(() => {
-        if (id) {
-            getMarkerWaitingDetailCallback(id)
+        if (completeId && completeId !== "") {
+            getMarkerWaitingDetailCallback(completeId)
                 .then((res) => {
                     console.log(res);
                 })
         }
-    }, [id]);
+    }, [completeId]);
+
+    const handleButton = (data) => {
+        const formData = new FormData();
+        formData.append("clear_id", completeId);
+        formData.append("status", data);
+        postMarkerWaitingCallback(formData)
+            .then((res) => {
+                console.log(res);
+                setCompleteId("");
+            })
+    }
 
     return (
         <View style={styles.container}>
@@ -114,12 +127,26 @@ const Complete = ({
                         </View>
 
                         <View style={styles.buttonContainer}>
-                            <View style={styles.rejectButton}>
-                                <Text style={{color: 'white', fontSize: 0.02 * vh(100)}}>거절</Text>
-                            </View>
-                            <View style={styles.approveButton}>
-                                <Text style={{color: 'white', fontSize: 0.02 * vh(100)}}>수락</Text>
-                            </View>
+                            <TouchableOpacity
+                                style={styles.rejectButton}
+                                onPress={() => {
+                                    handleButton("reject");
+                                }}
+                            >
+                                <View>
+                                    <Text style={{color: 'white', fontSize: 0.02 * vh(100)}}>거절</Text>
+                                </View>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={styles.approveButton}
+                                onPress={() => {
+                                    handleButton("approve");
+                                }}
+                            >
+                                <View>
+                                    <Text style={{color: 'white', fontSize: 0.02 * vh(100)}}>승인</Text>
+                                </View>
+                            </TouchableOpacity>
                         </View>
                     </View> : null
             }
