@@ -15,7 +15,7 @@ import { useRecoilState } from "recoil";
 import { screenState, Screen, userState } from "@apis/atoms";
 import { getMarkersSimiple, getUser, verifyFCM } from "@apis/apiServices";
 import messaging from "@react-native-firebase/messaging";
-import {UMarker} from "@components/Marker";
+import {CustomMarker, UMarker} from "@components/CustomMarker";
 
 const Main = ({ navigation }) => {
     const [screen, setScreen] = useRecoilState(screenState);
@@ -132,7 +132,7 @@ const Main = ({ navigation }) => {
                                 setScreen(Screen.Pin);
                             }}
                         >
-                            <UMarker marker={marker} zoom={cameraZoom}/>
+                            <CustomMarker marker={marker} zoom={cameraZoom}/>
                         </Marker>
                     ))
                 }

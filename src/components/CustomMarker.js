@@ -1,8 +1,7 @@
 import React from 'react';
 import {Image, StyleSheet, Text, View} from "react-native";
 
-// uncleand marker
-export const UMarker = ({marker, zoom}) => {
+export const CustomMarker = ({marker, zoom}) => {
     return (
         <View style={styles.container}>
             {zoom > 8 && <Text style={styles.reward}>{marker.reward}P</Text>}
