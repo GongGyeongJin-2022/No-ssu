@@ -4,13 +4,13 @@ import { vh, vw } from "react-native-css-vh-vw";
 import NaverMapView, { Marker } from "react-native-nmap";
 import { ScrollView } from "react-native-gesture-handler";
 import {useApi, useBottomSheetModalRef} from "@hooks/Hooks";
-import { getMarkersSimiple, getUser, postChargePoint } from "@apis/apiServices";
+import {getMarkersSimiple, getMypageLog, getUser, postChargePoint} from "@apis/apiServices";
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
 import { BootpayWebView } from 'react-native-bootpay';
 import {useRecoilState} from "recoil";
 import {tokenState} from "@apis/atoms";
 
-const LogItem = () => {
+const LogItem = ({log}) => {
     return (
         <View style={styles.logItemContainer}>
             <View style={styles.logItem}>
@@ -30,11 +30,11 @@ const LogItem = () => {
                     <Text style={{fontSize: 17, fontWeight: '400', color: 'black'}}>2022.07.25 12시 13분</Text>
                     <View style={styles.logItemPostedUser}>
                         <Text style={{marginRight: 10, color: 'black'}}>의뢰인</Text>
-                        <Text>상상부기</Text>
+                        <Text>{log.posted_user}</Text>
                     </View>
                     <View style={styles.logItemCleanUser}>
                         <Text style={{marginRight: 10, color: 'black'}}>처리인</Text>
-                        <Text>김한성</Text>
+                        <Text>{log.cleanup_user}</Text>
                     </View>
                 </View>
                 <View style={styles.pointContainer}>
@@ -49,6 +49,7 @@ const MyPage = ({navigation}) => {
     const [markersLoading, markers, getMarkersSimpleCallback] = useApi(getMarkersSimiple, true);
     const [userLoading, user, getUserCallback] = useApi(getUser, true);
     const [chargeLoading, charge, postChargePointCallback] = useApi(postChargePoint, true);
+    const [logLoading, logs, getLogCallback] = useApi(getMypageLog, true);
     const [token, setToken] = useRecoilState(tokenState);
 
     const [activityMapCenter, setActivityMapCenter] = useState({latitude: 37.5666102, longitude: 126.9783881, zoom: 10});
@@ -57,6 +58,7 @@ const MyPage = ({navigation}) => {
     const bootpay = useRef(null);
 
     useEffect(() => {
+        getLogCallback();
         getUserCallback()
             .then((res) => {
                 console.log(res);
@@ -263,9 +265,11 @@ const MyPage = ({navigation}) => {
                     <View style={{borderTopWidth: 0.75, width: vw(68)}}></View>
                 </View>
 
-                <LogItem />
-                <LogItem />
-                <LogItem />
+                {
+                    !logLoading && logs.map((log, idx) => (
+                        <LogItem key={"LogItem_" + idx} log={log}/>
+                    ))
+                }
 
                 <View style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: vh(1)}}>
                     <View style={{borderTopWidth: 0.75, width: vw(25)}} />

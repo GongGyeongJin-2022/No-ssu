@@ -157,3 +157,12 @@ export const postMarkerWaiting = (authHeader:any, body:any):any => {
         }
     );
 }
+
+export const getMypageLog = (authHeader:any):any => {
+    return axios.get(
+        `${URL}/api/mypage/`,
+         {
+            headers: authHeader
+        }
+    );
+}
