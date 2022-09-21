@@ -185,10 +185,11 @@ const Upload = () => {
                 setScreen(Screen.Main);
             })
             .catch(err => {
+                console.log("upload err", JSON.stringify(err));
                 Toast.show({
                     type: 'error',
                     text1: '등록 실패',
-                    text2: 'API호출중 에러가 발생했습니다.',
+                    text2: 'API호출중 에러가 발생했습니다. ' + err,
                 });
             })
             .finally(() => {

@@ -4,7 +4,7 @@ import {Image, StyleSheet, Text, View} from "react-native";
 export const CustomMarker = ({marker, zoom}) => {
     return (
         <View style={styles.container}>
-            {zoom > 8 && <Text style={styles.reward}>{marker.reward.reward}P</Text>}
+            {zoom > 8 && <Text style={styles.reward}>{marker.reward}P</Text>}
             {
                 marker.status === 'U' ?
                     <Image

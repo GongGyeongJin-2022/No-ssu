@@ -62,11 +62,11 @@ export const useApi = (api, authHeader=false) => {
                     return {data: callback(...args), status: false};
                 })
         } else {
-            console.log("unhandled error", err.response.status, err.response)
+            console.log("unhandled error", err.response.status, err.message)
             // setTimeout(() => {
             //     callback(...args);
             // }, 3000)
-            return {status:false};
+            return {status:false, error: err.message};
         }
     }
 
@@ -81,14 +81,14 @@ export const useApi = (api, authHeader=false) => {
                     console.log("accessToken token", accessToken);
                     console.log("refreshToken token", refreshToken);
                 }
-                const {data, status} = authHeader ? (
+                const {data, status, error} = authHeader ? (
                     await api(makeHeaders(accessToken), ...args)
                         .catch(err => errorHandling(err, refreshToken, ...args))
                 ) : (
                     await api(...args)
                         .catch(err => errorHandling(err, refreshToken, ...args))
                 );
-                if(!status) throw new Error("error");
+                if(!status) throw new Error(error);
                 setResolved(data);
                 setLoading(false);
                 console.log("final data",data);
