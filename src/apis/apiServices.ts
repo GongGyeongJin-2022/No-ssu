@@ -1,7 +1,7 @@
 import axios, {AxiosResponse} from "axios";
 import {Token} from "@apis/atoms";
 
-const PROTOCOL = "http://";
+const PROTOCOL = "https://";
 const AND_DEV_URL = PROTOCOL + "nossu.space";
 const IOS_DEV_URL = PROTOCOL +  "127.0.0.1:8000";
 export const URL = AND_DEV_URL;
