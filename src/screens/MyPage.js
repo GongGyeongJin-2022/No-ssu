@@ -65,34 +65,7 @@ const MyPage = ({navigation}) => {
             .then((res) => {
                 console.log(res);
             })
-        getMarkersSimpleCallback()
-            .then((res) => {
-                function rad2degr(rad) { return rad * 180 / Math.PI; }
-                function degr2rad(degr) { return degr * Math.PI / 180; }
-
-                let sumX = 0;
-                let sumY = 0;
-                let sumZ = 0;
-
-                res.map((marker) => {
-                    let lat = degr2rad(marker.latitude);
-                    let lng = degr2rad(marker.longitude);
-                    sumX += Math.cos(lat) * Math.cos(lng);
-                    sumY += Math.cos(lat) * Math.sin(lng);
-                    sumZ += Math.sin(lat);
-                });
-
-                let avgX = sumX / res.length;
-                let avgY = sumY / res.length;
-                let avgZ = sumZ / res.length;
-
-                // convert average x, y, z coordinate to latitude and longtitude
-                let lng = Math.atan2(avgY, avgX);
-                let hyp = Math.sqrt(avgX * avgX + avgY * avgY);
-                let lat = Math.atan2(avgZ, hyp);
-
-                setActivityMapCenter({latitude: rad2degr(lat), longitude: rad2degr(lng), zoom: 10});
-            })
+        getMarkersSimpleCallback();
     }, []);
 
     const logout = () => {
@@ -240,7 +213,7 @@ const MyPage = ({navigation}) => {
                         zoomControl={true}
                         setLocationTrackingMode={3}
                         logoMargin={{top: vh(200), left: 0, bottom: 0, right: 0}}
-                        center={activityMapCenter}
+                        center={{latitude: 37.5666102, longitude: 126.9783881, zoom: 0}}
                     >
                             {
                                 !markersLoading && markers.map((marker, idx) => (
