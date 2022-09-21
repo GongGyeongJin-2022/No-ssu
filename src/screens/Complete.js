@@ -122,7 +122,7 @@ const Complete = ({
                             </View>
                             <View style={{display: 'flex', flexDirection: 'row', alignItems: 'flex-end', width: '78%', justifyContent: 'space-between'}}>
                                 <Text style={{fontSize: 0.025 * vh(100), color: 'black'}}>지급 포인트</Text>
-                                <Text style={{fontSize: 0.025 * vh(100), color: 'black', fontWeight: '600'}}>{markerWaitingDetail.marker.reward.reward} 포인트</Text>
+                                <Text style={{fontSize: 0.025 * vh(100), color: 'black', fontWeight: '600'}}>{parseInt(markerWaitingDetail.marker.reward.reward*0.9)} 포인트</Text>
                             </View>
                         </View>
 

@@ -46,12 +46,20 @@ const Clear = ({detailLoading, detailResolved, getDetail, selectedMarkerId}) => 
 
             setLoading(true);
             callClear(formData)
-                .then(() => {
-                    Toast.show({
-                        type: 'success',
-                        text1: '업로드 성공'
-                    });
-                    setScreen(Screen.Main);
+                .then((res) => {
+                    if(res.response === false) {
+                        Toast.show({
+                            type: 'error',
+                            text1: '등록 실패',
+                            text2: '쓰레기가 감지되었습니다.',
+                        });
+                    } else {
+                        Toast.show({
+                            type: 'success',
+                            text1: '업로드 성공'
+                        });
+                        setScreen(Screen.Main);
+                    }
                 })
                 .catch(err => {
                     Toast.show({
