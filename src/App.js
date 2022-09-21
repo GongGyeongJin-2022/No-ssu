@@ -60,7 +60,7 @@ const App = () => {
                                         onAnimationFinish={() => {
                                             setSplash(false);
                                         }}
-                                        style={{backgroundColor: '#73B5CE'}}
+                                        style={{backgroundColor: '#BDE9A5'}}
                                     /> : <RootNavigator />
                             }
                         </BottomSheetModalProvider>
