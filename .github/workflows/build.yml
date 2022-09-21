@@ -1,0 +1,85 @@
+name: "Build"
+
+on:
+  push:
+    branches: 
+      - "main"
+    paths-ignore:
+      - '**.md'
+    tags:
+      - "!*"
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [macos-latest] #[macos-latest, ubuntu-latest, windows-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 1
+            
+      - name: Install Node.js, Npm
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16'
+          
+      - name: Install dependencies
+        run: yarn install
+        
+      - name: Build
+        run: |
+          cd android
+          ./gradlew app:assembleRelease
+          
+      - uses: bbonkr/get-version-action@v1.0.4
+        id: get_version
+        with:
+          project: "./package.json"
+
+      - name: check git tag
+        uses: bbonkr/git-tag-check-action@v1.0.9
+        id: gitTagCheck 
+        with:
+          tag: "v${{ steps.get_version.outputs.version }}"
+          github_token: ${{ secrets.GH_TOKEN }}
+
+      - name: Does not run because tag is exists
+        run: |
+          echo "TAG v${{ steps.gitTagCheck.outputs.tag }} is exists." 
+        if: ${{ steps.gitTagCheck.outputs.tag != '' }}
+
+      - name: package-version-to-git-tag
+        uses: pkgdeps/git-tag-action@v2
+        if: ${{ steps.gitTagCheck.outputs.tag == '' }}
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          github_repo: ${{ github.repository }}
+          version: ${{ steps.get_version.outputs.version }}
+          git_commit_sha: ${{ github.sha }}
+          git_tag_prefix: "v"
+
+      - name: Release Drafter
+        id: release_drafter
+        if: ${{ steps.gitTagCheck.outputs.tag == '' }}
+        uses: release-drafter/release-drafter@v5
+        with:
+          config-name: release-drafter.yml
+          version: "v${{ steps.get_version.outputs.version }}"
+          publish: true
+          # prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: Check Upload Url
+        if: ${{ steps.gitTagCheck.outputs.tag == '' }}
+        run: echo ${{ steps.release_drafter.outputs.upload_url }}
+          
+      - name: Upload Assets
+        uses: csexton/release-asset-action@v2
+        with:
+          pattern: "./android/app/build/outputs/release/app-release.apk"
+          github-token: ${{ secrets.GH_TOKEN }}
+          release-url: ${{ steps.release_drafter.outputs.upload_url }}
