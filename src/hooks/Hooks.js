@@ -29,11 +29,11 @@ export const useBottomSheetModalRef = () => {
 
     useEffect(() => {
         setBottomSheetModalRef(latestState.current);
-    },[])
+    },[JSON.stringify(latestState)])
 
     useEffect(()=> {
         latestState.current = bottomSheetModalRef;
-    },[bottomSheetModalRef]);
+    },[]);
 
     return latestState;
 }
