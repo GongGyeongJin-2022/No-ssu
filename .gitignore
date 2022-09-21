@@ -40,7 +40,7 @@ yarn-error.log
 # BUCK
 buck-out/
 \.buckd/
-*.keystore
+#*.keystore
 !debug.keystore
 
 # fastlane
@@ -62,7 +62,6 @@ buck-out/
 /ios/Pods/
 /vendor/bundle/
 
-.env
 yarn.lock
 
 resource
