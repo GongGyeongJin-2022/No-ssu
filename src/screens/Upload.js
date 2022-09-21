@@ -18,9 +18,9 @@ import MotionSlider from 'react-native-motion-slider';
 import { vw, vh } from 'react-native-css-vh-vw';
 import Toast from "react-native-toast-message";
 import {useApi} from "@hooks/Hooks";
-import {getTag, postMarker} from "@apis/apiServices";
+import {getTag, getUser, postMarker} from "@apis/apiServices";
 import {useRecoilValue, useSetRecoilState} from "recoil";
-import {screenState, tokenState, Screen} from "@apis/atoms";
+import {screenState, tokenState, Screen, userState} from "@apis/atoms";
 import Geolocation from "@react-native-community/geolocation";
 import Carousel from 'react-native-reanimated-carousel';
 import {ImageCarousel} from "@components/ImageCarousel";
@@ -28,6 +28,7 @@ import {ImageCarousel} from "@components/ImageCarousel";
 const Upload = () => {
     const [tagLoading, tagResolved, tagApi] = useApi(getTag, true);
     const [tags, setTags] = useState();
+    const [userLoading, userInfo, getUserCallback] = useApi(getUser, true);
 
     const [sizes, setSizes] = useState([
         {
@@ -75,6 +76,7 @@ const Upload = () => {
             .catch(err => {
                 console.log("error!!!!!!!",err);
             })
+        getUserCallback();
     },[]);
 
     const setGeoLocation = () => {
@@ -198,7 +200,7 @@ const Upload = () => {
     return (
         <View style={styles.fullContainer}>
             {
-                tagLoading ? (
+                tagLoading || userLoading ? (
                     <View>
                         <Text>
                             loading
@@ -263,9 +265,9 @@ const Upload = () => {
                             <View style={styles.rewardContainer}>
                                 <MotionSlider
                                     min={1}
-                                    max={100}
-                                    value={3}
-                                    decimalPlaces={0}
+                                    max={userInfo.point}
+                                    value={15}
+                                    decimalPlaces={3}
                                     units={'P'}
                                     backgroundColor={['rgb(117, 176, 116)', 'rgb(157, 216, 156)']}
                                     onValueChanged={(value) => setReward(value)}
