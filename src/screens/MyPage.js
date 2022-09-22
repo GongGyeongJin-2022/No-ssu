@@ -287,6 +287,7 @@ const MyPage = ({navigation}) => {
 const styles = StyleSheet.create({
     container: {
         width: '100%',
+        height: vh(100) - 45
     },
     infoContainer: {
         display: 'flex',
@@ -429,6 +430,8 @@ const styles = StyleSheet.create({
         borderColor: '#93CE92',
     },
     logoutButton: {
+        position: 'absolute',
+        bottom: 0,
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: '#B30000',
@@ -436,8 +439,7 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 10,
         padding: 5,
         width: vw(100),
-        height: 40,
-        marginTop: vh(12),
+        height: 40
     },
 });
 
