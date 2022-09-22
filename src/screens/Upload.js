@@ -206,10 +206,6 @@ const Upload = () => {
 
     }
 
-    const setRoundReward = (value) => {
-        setReward(Math.round(value));
-    }
-
     return (
         <View style={styles.fullContainer}>
             {
@@ -279,11 +275,11 @@ const Upload = () => {
                                 <MotionSlider
                                     min={1}
                                     max={userInfo.point}
-                                    value={15}
-                                    decimalPlaces={3}
+                                    value={reward}
+                                    decimalPlaces={0}
                                     units={'P'}
                                     backgroundColor={['rgb(117, 176, 116)', 'rgb(157, 216, 156)']}
-                                    onValueChanged={(value) => setRoundReward(value)}
+                                    onValueChanged={(value) => setReward(value)}
                                 />
                             </View>
                         </View>
