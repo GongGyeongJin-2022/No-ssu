@@ -206,6 +206,10 @@ const Upload = () => {
 
     }
 
+    const setRoundReward = (value) => {
+        setReward(Math.round(value));
+    }
+
     return (
         <View style={styles.fullContainer}>
             {
@@ -279,7 +283,7 @@ const Upload = () => {
                                     decimalPlaces={3}
                                     units={'P'}
                                     backgroundColor={['rgb(117, 176, 116)', 'rgb(157, 216, 156)']}
-                                    onValueChanged={(value) => setReward(value)}
+                                    onValueChanged={(value) => setRoundReward(value)}
                                 />
                             </View>
                         </View>
